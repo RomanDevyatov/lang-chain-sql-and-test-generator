@@ -1,4 +1,11 @@
+import logging
 from llm.orchestrator import ETLOrchestrator
+
+from dotenv import load_dotenv
+from genaidrivenetl.logging_config import setup_logging
+
+
+logger = logging.getLogger(__name__)
 
 RAW_SCHEMA = """
 raw_events(
@@ -17,14 +24,17 @@ Exclude bots.
 Revenue only from purchase events.
 """
 
+
+load_dotenv()
+setup_logging()
+
+
 def main():
     orchestrator = ETLOrchestrator()
-    sql_file = orchestrator.generate_sql(RAW_SCHEMA, BUSINESS_RULES)
-    print("Generated SQL at:", sql_file)
+    generated_sql_file_path = orchestrator.generate_sql(RAW_SCHEMA, BUSINESS_RULES)
 
-    sql_logic = sql_file.read_text()
+    sql_logic = generated_sql_file_path.read_text()
     orchestrator.generate_tests(sql_logic)
-    print("Generated tests.")
 
 if __name__ == "__main__":
     main()

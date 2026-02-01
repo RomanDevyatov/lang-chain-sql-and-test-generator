@@ -9,3 +9,6 @@ Generate pytest tests that validate:
 - session_end >= session_start
 - revenue >= 0
 - no duplicate sessions
+
+Do not include any code blocks, markdown formatting, or ``` symbols.
+Output plain Python code only.

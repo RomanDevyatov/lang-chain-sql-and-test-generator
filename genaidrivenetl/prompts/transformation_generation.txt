@@ -11,5 +11,8 @@ Generate production-ready SQL transformations for:
 - sessionization
 - revenue attribution
 
-Use Redshift-compatible SQL.
-Include comments.
+Use PostgreSQL-compatible SQL.
+Include detailed comments explaining each step.
+
+Do not include any code blocks, markdown formatting, or ``` symbols.
+Output plain SQL only.
