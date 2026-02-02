@@ -21,12 +21,6 @@ echo "Running main_pipeline.py..."
 ./scripts/run_main_pipeline.sh
 
 # ==============================
-# Run main_pipeline.py
-# ==============================
-#echo "Running validate_generated_sql.py..."
-#./scripts/run_validate_sql.sh
-
-# ==============================
 # Run generated tests
 # ==============================
 echo "Running generated tests..."
