@@ -38,4 +38,10 @@ echo "Running generated tests..."
 echo "Running stage to prod..."
 ./scripts/run_commit_views.sh
 
+# ==============================
+# Run linting
+# ==============================
+echo "Running linting..."
+./scripts/run_lint.sh
+
 echo "All steps finished successfully"
