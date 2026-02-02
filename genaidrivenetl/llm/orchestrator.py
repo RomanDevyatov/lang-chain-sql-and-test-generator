@@ -3,7 +3,11 @@ from pathlib import Path
 from genaidrivenetl.llm.client import LLMClient
 
 from genaidrivenetl.config import (
-    PROMPTS_DIR, GENERATED_SQL_PATH, GENERATED_TESTS_PATH, TRANSFORMATION_GENERATION_TXT, TEST_GENERATION_TXT,
+    PROMPTS_DIR,
+    GENERATED_SQL_PATH,
+    GENERATED_TESTS_PATH,
+    TRANSFORMATION_GENERATION_TXT,
+    TEST_GENERATION_TXT,
 )
 
 
@@ -23,10 +27,10 @@ class ETLOrchestrator:
             raise FileNotFoundError(f"Prompt not found: {path}")
         return path.read_text()
 
-    def generate_sql(self, raw_schema, rules) -> Path:
+    def generate_sql(self, raw_schema, view_name) -> Path:
         prompt = self.load_prompt(TRANSFORMATION_GENERATION_TXT).format(
             raw_schema=raw_schema,
-            business_rules=rules
+            view_name=view_name,
         )
         logger.info(f'Sending prompt: {prompt}')
 
@@ -39,12 +43,14 @@ class ETLOrchestrator:
 
         return path
 
-    def generate_tests(self, sql_logic) -> Path:
+    def generate_tests(self, sql_logic, view_name, fixture_name) -> Path:
         prompt = self.load_prompt(TEST_GENERATION_TXT).format(
-            sql_logic=sql_logic
+            sql_logic=sql_logic,
+            view_name=view_name,
+            fixture_name=fixture_name
         )
 
-        logger.info(f'Sending test prompt.')
+        logger.info(f'Sending test prompt: {prompt}')
         tests = self.llm.generate(prompt)
         logger.info(f'Fetched response.')
 

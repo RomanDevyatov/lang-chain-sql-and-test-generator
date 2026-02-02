@@ -1,9 +1,8 @@
 import logging
-import os
+
 from openai import OpenAI
 
 from genaidrivenetl.config import OPENROUTER_API_KEY, LLM_MODELS
-
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +24,8 @@ class LLMClient:
                 response = self.client.chat.completions.create(
                     model=model,
                     messages=[
-                        {"role": "system", "content": "You are a helpful data engineering assistant."},
+                        {"role": "system",
+                         "content": "You are a helpful data engineering assistant."},
                         {"role": "user", "content": prompt},
                     ]
                 )

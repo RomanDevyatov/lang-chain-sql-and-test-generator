@@ -3,16 +3,17 @@ import os
 from dotenv import load_dotenv
 import logging
 
-load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+
+load_dotenv()
+
 
 # ========= PROJECT ROOT =========
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
 GENAI_ROOT = PROJECT_ROOT / "genaidrivenetl"
-
 DATA_DIR = PROJECT_ROOT / "data"
 OUTPUTS_DIR = DATA_DIR / "generated_outputs"
 LOG_DIR = DATA_DIR / "logs"
@@ -21,18 +22,15 @@ for p in [DATA_DIR, OUTPUTS_DIR, LOG_DIR]:
     p.mkdir(parents=True, exist_ok=True)
 
 PROMPTS_DIR = GENAI_ROOT / "prompts"
-
 GENERATED_SQL_PATH = OUTPUTS_DIR / "sql"
 TESTS_DIR = PROJECT_ROOT / "tests"
 GENERATED_TESTS_PATH = TESTS_DIR / "generated_tests.py"
-
 TRANSFORMATION_GENERATION_TXT = "transformation_generation.txt"
 TEST_GENERATION_TXT = "test_generation.txt"
 
 # ========= LLM =========
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-
 LLM_MODELS = [
     "arcee-ai/trinity-large-preview:free",
 ]
@@ -47,6 +45,24 @@ logger.info(f"GENERATED_TESTS_PATH: {GENERATED_TESTS_PATH}")
 logger.info(f"LLM_MODELS: {LLM_MODELS}")
 
 # ========= LOG ==========
+
 LOG_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 LOG_FILE = LOG_DIR / "app.log"
 LOGGING_LEVEL = logging.INFO
+
+# ========= SQL ==========
+
+USER_METRICS_VIEW_NAME = os.getenv("VIEW_NAME")
+USER_METRICS_STAGING_VIEW_NAME = os.getenv("STAGING_VIEW_NAME")
+
+RAW_SCHEMA = """
+raw_events(
+ user_id text,
+ event_time timestamp,
+ event_type text,
+ session_id text,
+ revenue numeric,
+ user_agent text
+)
+"""
+FIXTURE_NAME = "user_metrics_df"

@@ -1,14 +1,26 @@
-You are a data quality engineer.
+You are a senior data quality engineer.
 
-Given this ETL logic:
+Here is the PostgreSQL ETL SQL that creates the staging view:
+
 {sql_logic}
 
-Generate pytest tests that validate:
+The SQL creates or replaces a view named {view_name}.
 
-- no null session_id
-- session_end >= session_start
-- revenue >= 0
-- no duplicate sessions
+Pytest loads this view into a pandas DataFrame fixture named {fixture_name}.
 
-Do not include any code blocks, markdown formatting, or ``` symbols.
-Output plain Python code only.
+Generate pytest tests that validate the business correctness of this view.
+
+Required checks:
+
+- total_revenue is not null and >= 0
+- total_events > 0
+- avg_revenue_per_event >= 0
+- no duplicate user_id rows
+
+Rules:
+
+- Use only user_metrics_df fixture
+- Do not access database
+- Do not define fixtures
+- Output only plain Python code
+- No markdown, no backticks, no explanations

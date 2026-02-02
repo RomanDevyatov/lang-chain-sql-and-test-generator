@@ -1,18 +1,23 @@
 You are a senior data engineer.
 
-Input schema:
+Input table schema:
 {raw_schema}
 
-Business rules:
-{business_rules}
+Generate PostgreSQL SQL that:
 
-Generate production-ready SQL transformations for:
-- cleaning events
-- sessionization
-- revenue attribution
+Creates or replaces a view named {view_name}.
 
-Use PostgreSQL-compatible SQL.
-Include detailed comments explaining each step.
+The view must aggregate per user:
 
-Do not include any code blocks, markdown formatting, or ``` symbols.
-Output plain SQL only.
+- total_revenue = sum of revenue for purchase events
+- total_events = count of all events
+- avg_revenue_per_event = total_revenue divided by total_events
+
+Rules:
+
+- PostgreSQL compatible
+- Use GROUP BY
+- Avoid window functions
+- Include simple comments
+- Handle division by zero safely
+- Output only SQL (no markdown, no backticks)
