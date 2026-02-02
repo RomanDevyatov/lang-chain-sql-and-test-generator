@@ -3,22 +3,14 @@ import logging
 from dotenv import load_dotenv
 from llm.orchestrator import ETLOrchestrator
 
-from genaidrivenetl.config import (FIXTURE_NAME, RAW_SCHEMA,
-                                   USER_METRICS_STAGING_VIEW_NAME)
+from genaidrivenetl.config import (
+    FIXTURE_NAME,
+    RAW_SCHEMA,
+    USER_METRICS_STAGING_VIEW_NAME,
+)
 from genaidrivenetl.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
-
-# RAW_SCHEMA = """
-# raw_events(
-#  user_id text,
-#  event_time timestamp,
-#  event_type text,
-#  session_id text,
-#  revenue numeric,
-#  user_agent text
-# )
-# """
 
 
 load_dotenv()
