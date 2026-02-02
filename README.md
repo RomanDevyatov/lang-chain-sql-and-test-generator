@@ -23,12 +23,6 @@
 
 ---
 
-## Stack
-
-Python, PostgreSQL, LLM API, pytest
-
----
-
 ## Run
 
 1. Start Postgres
@@ -75,7 +69,7 @@ chmod +x ./scripts/*.sh
 
 ---
 
-Code Quality
+## Code Quality
 
 Autoformat code with Black and isort:
 
@@ -95,10 +89,30 @@ Optional: Run full lint script:
 ```
 ---
 
-Notes
+## Notes
 
-ETL SQL is generated automatically and saved under data/generated_outputs/sql/etl.sql.
+ETL SQL is generated automatically and saved under _data/generated_outputs/sql/etl.sql_.
 
-Views such as user_metrics_view__staging and user_metrics_view are created dynamically.
+Views such as _user_metrics_view__staging_ and _user_metrics_view_ are created dynamically.
 
-The project uses Poetry for reproducible environments.
+You can add new metrics editing `aggregates` in the [sql generation prompt](genaidrivenetl/prompts/transformation_generation.txt).
+As well, you can generate new tests by editing `required_checks` in the [test generation prompt](genaidrivenetl/prompts/test_generation.txt).
+The project uses Poetry for reproducible environments. Check [config file](genaidrivenetl/config.py).
+
+---
+
+## Screenshots
+
+1. Prompt to generate SQL query
+![img_1.png](screenshots/img_1.png)
+2. Generated SQL
+![img_2.png](screenshots/img_2.png)
+3. Prompt for test generation
+![img_3.png](screenshots/img_3.png)
+4. Generated tests  
+![img_4.png](screenshots/img_4.png)
+5. Run generated tests
+![img_5.png](screenshots/img_5.png)  
+Executed generated SQL queries on user event streams and transactional data to produce analytics metrics and validate results  
+6. Update the table if tests completed successfully (stage —> prod)
+![img_6.png](screenshots/img_6.png)
