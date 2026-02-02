@@ -1,6 +1,6 @@
 import logging
 
-from genaidrivenetl.config import LOG_FORMAT, LOG_FILE, LOGGING_LEVEL
+from genaidrivenetl.config import LOG_FILE, LOG_FORMAT, LOGGING_LEVEL
 
 
 def setup_logging(level=LOGGING_LEVEL):

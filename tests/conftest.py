@@ -1,10 +1,11 @@
-import os
 import logging
-import pytest
+import os
+
 import pandas as pd
+import pytest
 from sqlalchemy import create_engine, text
 
-from genaidrivenetl.config import USER_METRICS_VIEW_NAME, USER_METRICS_STAGING_VIEW_NAME
+from genaidrivenetl.config import USER_METRICS_STAGING_VIEW_NAME, USER_METRICS_VIEW_NAME
 
 logger = logging.getLogger(__name__)
 

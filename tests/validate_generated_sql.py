@@ -1,8 +1,9 @@
+import logging
+import os
 import sys
+
 import sqlparse
 from sqlalchemy import create_engine, text
-import os
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,15 @@
 import logging
 
-from genaidrivenetl.config import RAW_SCHEMA, USER_METRICS_VIEW_NAME, FIXTURE_NAME, USER_METRICS_STAGING_VIEW_NAME
+from dotenv import load_dotenv
 from llm.orchestrator import ETLOrchestrator
 
-from dotenv import load_dotenv
+from genaidrivenetl.config import (
+    FIXTURE_NAME,
+    RAW_SCHEMA,
+    USER_METRICS_STAGING_VIEW_NAME,
+    USER_METRICS_VIEW_NAME,
+)
 from genaidrivenetl.logging_config import setup_logging
-
 
 logger = logging.getLogger(__name__)
 
