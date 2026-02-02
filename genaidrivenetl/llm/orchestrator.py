@@ -1,9 +1,13 @@
 import logging
 from pathlib import Path
 
-from genaidrivenetl.config import (GENERATED_SQL_PATH, GENERATED_TESTS_PATH,
-                                   PROMPTS_DIR, TEST_GENERATION_TXT,
-                                   TRANSFORMATION_GENERATION_TXT)
+from genaidrivenetl.config import (
+    GENERATED_SQL_PATH,
+    GENERATED_TESTS_PATH,
+    PROMPTS_DIR,
+    TEST_GENERATION_TXT,
+    TRANSFORMATION_GENERATION_TXT,
+)
 from genaidrivenetl.llm.client import LLMClient
 
 logger = logging.getLogger(__name__)

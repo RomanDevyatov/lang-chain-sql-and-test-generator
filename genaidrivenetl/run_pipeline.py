@@ -3,8 +3,11 @@ import logging
 from dotenv import load_dotenv
 from llm.orchestrator import ETLOrchestrator
 
-from genaidrivenetl.config import (FIXTURE_NAME, RAW_SCHEMA,
-                                   USER_METRICS_STAGING_VIEW_NAME)
+from genaidrivenetl.config import (
+    FIXTURE_NAME,
+    RAW_SCHEMA,
+    USER_METRICS_STAGING_VIEW_NAME,
+)
 from genaidrivenetl.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)

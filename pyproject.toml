@@ -31,3 +31,16 @@ dev = [
     "black (>=26.1.0,<27.0.0)",
     "isort (>=7.0.0,<8.0.0)"
 ]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+skip-string-normalization = false
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
