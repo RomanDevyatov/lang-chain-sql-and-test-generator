@@ -1,46 +1,71 @@
-# GenAI-Driven ETL Workflow Generator
+# LangChain SQL & Test Generator
 
-**GenAIDrivenETL** is an ETL pipeline project powered by generative AI. It generates SQL transformations and corresponding tests for session metrics and other analytics derived from raw event data.
+**GenAIDrivenETL** is a LangChain-powered data engineering project that automatically generates SQL transformations and corresponding pytest tests from raw event schemas and business rules.
+The project demonstrates how LLM orchestration can be integrated into a production-style ETL workflow with validation, testing, and code quality enforcement.
+
+---
+
+Architecture Overview
+
+SQL Prompt -> LangChain LLM -> Generated SQL (View) -> Test Prompt -> LangChain LLM -> Generated Pytest Tests -> Test Execution -> View Promotion (staging → final)
 
 ---
 
 ## Features
 
-- Generates production-ready SQL transformations from raw schema and business rules.
-- Supports PostgreSQL local database.
-- Automatically creates views for session metrics.
-- Generates `pytest` tests to validate data quality.
-- Includes Poetry for dependency management.
-- Built-in PEP8 linting and formatting with Black, isort, and Flake8.
+- LangChain LCEL-based orchestration pipeline
+
+- Automatic SQL generation from raw schema + rules
+
+- Automatic `pytest` test generation
+
+- PostgreSQL integration (staging → final views)
+
+- SQL validation before execution
+
+- Rollback on test failure
+
+- PEP8 linting (Black, isort, Flake8)
+
+- Fully reproducible environment with Poetry
 
 ---
 
 ## GenAI Usage
 
-- Schema modeling from business rules
-- SQL transformation generation
-- Test automation
+- This project demonstrates practical GenAI usage in Data Engineering:
 
----
+- Schema-driven SQL generation
 
-## Run
+- Metric aggregation logic generation
 
-1. Start Postgres
-2. Load sample data
-3. Run pipeline:
+- Automated data quality test creation
+
+- LLM-based orchestration via LangChain LCEL
 
 ---
 
 ## Setup
+### 0) Requirements
 
-1. **Clone the repository:**
+- Python 3.11+
 
+- PostgreSQL running locally
+
+- Poetry installed
+
+### 1) Clone repository
 ```bash
 git clone https://github.com/romandevyatov/GenAIDrivenETL.git
 cd GenAIDrivenETL
 ```
 
-2. Create .env file in the project root:
+### 2) Install dependencies
+```bash
+poetry install
+```
+
+### 3) Create .env file in the project root:
 
  * OPENROUTER_API_KEY=your_openrouter_key
  * DB_NAME=genai_etl_db_any
@@ -51,7 +76,7 @@ cd GenAIDrivenETL
  * VIEW_NAME=your_table_name_any
  * STAGING_VIEW_NAME=your_staging_table_name_any
 
-3. Run pipeline:
+### 4) Run pipeline:
 ```bash
 ./scripts/run_all.sh
 ```
@@ -62,9 +87,38 @@ cd GenAIDrivenETL
   - run_commit_views.sh
   - run_lint.sh
 
-P.S.: (On-MacOS) Make shell scripts executable:
+---
+
+## macOS users
+
+Make scripts executable:
+
 ```bash
 chmod +x ./scripts/*.sh
+```
+
+---
+
+## Generated Artifacts
+
+Generated SQL:
+```bash
+data/generated_outputs/sql/etl.sql
+```
+
+Generated tests:
+```bash
+tests/generated_tests.py
+```
+
+Staging View:
+```bash
+user_metrics_view__staging
+```
+
+Final View:
+```bash
+user_metrics_view
 ```
 
 ---
@@ -74,13 +128,13 @@ chmod +x ./scripts/*.sh
 Autoformat code with Black and isort:
 
 ```bash
-poetry run black genaidrivenetl tests
-poetry run isort genaidrivenetl tests
+poetry run black .
+poetry run isort .
 ```
 
 Check PEP8 compliance with Flake8:
 ```bash
-poetry run flake8 genaidrivenetl tests
+poetry run flake8 .
 ```
 
 Optional: Run full lint script:
@@ -95,8 +149,8 @@ ETL SQL is generated automatically and saved under _data/generated_outputs/sql/e
 
 Views such as _user_metrics_view__staging_ and _user_metrics_view_ are created dynamically.
 
-You can add new metrics editing `aggregates` in the [sql generation prompt](genaidrivenetl/prompts/transformation_generation.py).
-As well, you can generate new tests by editing `required_checks` in the [test generation prompt](genaidrivenetl/prompts/test_generation.py).
+You can add new metrics editing `aggregates` in the [sql generation prompt](genaidrivenetl/prompts/v1/sql_prompt.txt).
+As well, you can generate new tests by editing `required_checks` in the [test generation prompt](genaidrivenetl/prompts/v1/test_prompt.txt).
 The project uses Poetry for reproducible environments. Check [config file](genaidrivenetl/config.py).
 
 ---
