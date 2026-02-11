@@ -57,7 +57,7 @@ SQL Prompt -> LangChain LLM -> Generated SQL (View) -> Test Prompt -> LangChain 
 ### 1) Clone repository
 ```bash
 git clone https://github.com/RomanDevyatov/lang-chain-sql-and-test-generator.git
-cd GenAIDrivenETL
+cd lang-chain-sql-and-test-generator
 ```
 
 ### 2) Install dependencies
