@@ -1,6 +1,6 @@
 # LangChain SQL & Test Generator
 
-**GenAIDrivenETL** is a LangChain-powered data engineering project that automatically generates SQL transformations and corresponding pytest tests from raw event schemas and business rules.
+**lang-chain-sql-and-test-generator** is a LangChain-powered data engineering project that automatically generates SQL transformations and corresponding pytest tests from raw event schemas and business rules.
 The project demonstrates how LLM orchestration can be integrated into a production-style ETL workflow with validation, testing, and code quality enforcement.
 
 ---
