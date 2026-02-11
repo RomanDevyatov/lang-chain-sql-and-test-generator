@@ -76,9 +76,9 @@ class Config:
     FIXTURE_NAME = "user_metrics_df"
 
     # ========= PROMPTS =========
-
-    SQL_PROMPT_PATH = PROMPTS_DIR / "sql_prompt.txt"
-    TEST_PROMPT_PATH = PROMPTS_DIR / "test_prompt.txt"
+    VERSION = "v1"
+    SQL_PROMPT_PATH = PROMPTS_DIR / VERSION / "sql_prompt.txt"
+    TEST_PROMPT_PATH = PROMPTS_DIR / VERSION / "test_prompt.txt"
 
     # ========= LOGGING =========
 

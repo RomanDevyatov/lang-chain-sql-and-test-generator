@@ -11,4 +11,5 @@ def setup_logging(level=Config.LOGGING_LEVEL):
             logging.StreamHandler(),
             logging.FileHandler(Config.LOG_FILE),
         ],
+        force=True,
     )
