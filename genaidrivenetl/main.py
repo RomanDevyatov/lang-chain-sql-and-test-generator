@@ -1,5 +1,6 @@
 import logging
 
+import mlflow
 from dotenv import load_dotenv
 
 from genaidrivenetl.config import Config
@@ -14,6 +15,9 @@ load_dotenv()
 Config.ensure_directories()
 setup_logging()
 
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.langchain.autolog()
+
 
 def run_pipeline():
     llm = build_llm(
@@ -25,7 +29,10 @@ def run_pipeline():
     pipeline = build_pipeline(llm)
 
     try:
-        pipeline.invoke({})
+        mlflow.set_experiment("lang-chain-mlflow-integration")
+
+        with mlflow.start_run(run_name="genai-etl"):
+            pipeline.invoke({})
     except Exception as e:
         logger.exception(f"Pipeline failed: {e}")
 

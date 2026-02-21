@@ -19,6 +19,10 @@ class Config:
     GENERATED_SQL_PATH = OUTPUTS_DIR / "sql" / "etl.sql"
     GENERATED_TESTS_PATH = PROJECT_ROOT / "tests" / "generated_tests.py"
 
+    # ========= MLFLOW ======
+
+    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+
     # ========= LLM =========
 
     OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
