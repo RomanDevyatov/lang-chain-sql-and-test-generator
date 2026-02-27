@@ -71,10 +71,11 @@ class Config:
     - Use only the user_metrics_df fixture.
     - Do not access any database.
     - Do not define or redefine fixtures.
-    - Output only plain Python code.
-    - Do not use markdown formatting.
-    - Do not use backticks.
-    - Do not include explanations or comments.
+    - Output strictly plain Python code.
+    - Never use markdown formatting.
+    - Never use backticks (`).
+    - Do not include explanations, comments, or text outside code.
+    - Do not wrap code in any code blocks.
     """
 
     FIXTURE_NAME = "user_metrics_df"

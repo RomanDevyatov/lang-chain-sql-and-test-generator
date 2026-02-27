@@ -212,3 +212,7 @@ tests/generated_tests.py
 
 # macOS
 .DS_Store
+
+# mlflow
+mlflow.db
+mlartifacts/
