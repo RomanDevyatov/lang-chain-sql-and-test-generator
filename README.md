@@ -50,13 +50,22 @@ SQL Prompt -> LangChain LLM -> Generated SQL (View) -> Test Prompt -> LangChain 
 
 - Python 3.11+
 
-- PostgreSQL running locally:
+- PostgreSQL running locally with configured postgres user:
     ```bash
     brew services start postgresql@16
     ``` 
 
 - Poetry installed
 
+- Run ML flow
+    ```bash 
+  mlflow server \
+  --backend-store-uri sqlite:///mlflow.db \
+  --default-artifact-root ./mlartifacts \
+  --host 127.0.0.1 \
+  --port 5000
+    ``` 
+  
 ### 1) Clone repository
 ```bash
 git clone https://github.com/RomanDevyatov/lang-chain-sql-and-test-generator.git
