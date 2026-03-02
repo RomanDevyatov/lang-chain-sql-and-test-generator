@@ -61,9 +61,8 @@ graph TD
 - `MLflow` tracking for parameters, metrics, and artifacts
 - Rollback on test failure
 - PEP8 linting (Black, isort, Flake8)
-- Fully reproducible environment with `Poetry`
+- Fully reproducible environment via `Poetry`
 
-Fully reproducible environment via Poetry
 ---
 
 ## Agentic Workflow Components
