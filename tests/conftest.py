@@ -80,7 +80,29 @@ def validate_etl_sql(engine, etl_sql_path):
 
 @pytest.fixture(scope="session")
 def user_metrics_df(run_etl):
-    return pd.read_sql(
-        f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
-        run_etl,
-    )
+    # return pd.read_sql(
+    #     f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
+    #     run_etl
+    # )
+    # conn = run_etl.raw_connection()  # это возвращает объект с .cursor()
+    # try:
+    #     df = pd.read_sql(
+    #         f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
+    #         conn
+    #     )
+    # finally:
+    #     conn.close()
+    # return df
+
+    # df = pd.read_sql(
+    #     f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
+    #     run_etl  # engine напрямую
+    # )
+    # return df
+
+    with run_etl.connect() as conn:
+        result = conn.execute(text(f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id"))
+        df = pd.DataFrame(result.fetchall(), columns=result.keys())
+    return df
+
+
