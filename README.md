@@ -7,7 +7,46 @@ It demonstrates how LLM orchestration can be integrated into a production-style 
 
 Architecture Overview
 
-SQL Prompt -> LangChain LLM -> Generated SQL (View) -> Test Prompt -> LangChain LLM -> Generated Pytest Tests -> Test Execution -> View Promotion (staging → final)
+```mermaid
+graph TD
+    %% Nodes Definition
+    Start([Raw Schema & Business Rules]) --> Ingestion[Metadata Ingestion]
+
+    subgraph "AI Synthesis Engine"
+        Ingestion --> SQLGenNode[LLM SQL Architect]
+        SQLGenNode --> SQLValidator{SQL Validator}
+        SQLValidator -->|Success| TestGenNode[LLM Test Engineer]
+        
+        %% Operational Logs
+        SQLGenNode -.->|Log| MLflow((MLflow Tracking))
+        TestGenNode -.->|Log| MLflow
+    end
+
+    subgraph "Data Quality & Persistence"
+        SQLValidator -->|Write| Staging[(PostgreSQL Staging)]
+        TestGenNode -->|Generate| Suite[Pytest Suite]
+        Suite --> Executor[Quality Gate / Runner]
+        Staging --> Executor
+    end
+
+    subgraph "Deployment"
+        Executor -->|Pass| Production[(Production View)]
+        Executor -->|Fail| Rollback[Circuit Breaker / Rollback]
+    end
+
+    %% Colors and Styles
+    classDef startEnd fill:#f5f5f5,stroke:#666,stroke-width:2px,color:#333;
+    classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef storage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef action fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5;
+
+    class Start,End startEnd;
+    class SQLGenNode,TestGenNode aiNode;
+    class Staging,Production storage;
+    class SQLValidator,Executor,Suite action;
+    class MLflow tracking;
+```
 
 ---
 
@@ -27,7 +66,7 @@ SQL Prompt -> LangChain LLM -> Generated SQL (View) -> Test Prompt -> LangChain 
 Fully reproducible environment via Poetry
 ---
 
-## GenAI Usage
+## Agentic Workflow Components
 
 - Schema-driven SQL generation
 - Metric aggregation logic generation
@@ -107,7 +146,7 @@ chmod +x ./scripts/*.sh
 
 ## MLflow Tracking
 
-MLflow is used to log parameters, generated SQL/tests, and metrics for each run.  
+MLflow tracking is used here as a Model/Code Registry, ensuring that every generated artifact is auditable before it hits production.
 It ensures reproducibility and observability.
 
 1. **Experiments Overview**  
@@ -173,11 +212,20 @@ Optional: Run full lint script:
 ## Notes
 
 - ETL SQL is generated automatically and saved under _data/generated_outputs/sql/etl.sql_.
+- The project follows security best practices by using environment variables `(.env)` and excluding sensitive data/logs from version control.
 - Views such as _user_metrics_view__staging_ and _user_metrics_view_ are created dynamically.
 - Add new metrics in `aggregates` in the [sql generation prompt](genaidrivenetl/prompts/v1/sql_prompt.txt).
 - Add new tests via `required_checks` in the [test generation prompt](genaidrivenetl/prompts/v1/test_prompt.txt).
 - The project uses Poetry for reproducible environments. Check [config file](genaidrivenetl/config.py).
-- Experiment tracking via MLflow ensures reproducibility and auditability.
+- Experiment tracking via `MLflow` ensures reproducibility and auditability.
+
+---
+
+## Future Roadmap
+
+1. Integration with Vector DB for RAG-based schema lookups.
+2. Support for dbt (data build tool) adapter.
+3. Automated Cost Estimation for the generated SQL queries.
 
 ---
 
