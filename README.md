@@ -5,7 +5,7 @@ It demonstrates how LLM orchestration can be integrated into a production-style 
 
 ---
 
-Architecture Overview
+## Architecture Overview
 
 ```mermaid
 graph TD
@@ -47,6 +47,16 @@ graph TD
     class SQLValidator,Executor,Suite action;
     class MLflow tracking;
 ```
+
+---
+
+## 🛡️ Governance & Reliability
+
+This project treats **LLM-generated code as a first-class engineering artifact**. Unlike simple scripts, this pipeline implements a "Trust but Verify" model:
+
+* **Model & Code Registry:** MLflow acts as a central repository, ensuring every generated SQL query and test suite is versioned, auditable, and linked to the specific Prompt/LLM version used.
+* **Quality Gates:** Every run logs success metrics. The system prevents "Promotion to Production" (View Commit) unless the specific MLflow Run ID marks all generated tests as `Passed`.
+* **Reproducibility:** By logging parameters and schemas, we ensure that any production issue can be debugged by re-running the exact same generation environment.
 
 ---
 
