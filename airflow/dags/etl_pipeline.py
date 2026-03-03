@@ -1,10 +1,10 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
-from genaidrivenetl.pipeline import run_main_pipeline  # твой LangChain ETL
+from genaidrivenetl.main import run_pipeline
 
 def run_etl_task():
-    run_main_pipeline()
+    run_pipeline()
 
 with DAG(
     dag_id="genai_etl",
