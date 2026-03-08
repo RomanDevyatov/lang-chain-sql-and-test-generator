@@ -181,6 +181,15 @@ Optional: Run full lint script:
 
 ---
 
+## Docker
+
+```cmd
+docker compose up -d
+docker compose down --volumes --remove-orphans
+```
+
+---
+
 ## Screenshots
 
 1. Prompt to generate SQL query

@@ -332,5 +332,55 @@ services:
 #      airflow-init:
 #        condition: service_completed_successfully
 
+  postgres-mlflow:
+    image: postgres:15
+    container_name: mlflow-postgres
+    environment:
+      POSTGRES_USER: mlflow
+      POSTGRES_PASSWORD: mlflow
+      POSTGRES_DB: mlflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-db-volume-mlflow:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    container_name: mlflow-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-server
+    depends_on:
+      - postgres-mlflow
+      - minio
+    ports:
+      - "5000:5000"
+    environment:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    volumes:
+      - mlruns:/mlruns
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow:5432/mlflow
+      --default-artifact-root ./mlruns
+      --host 0.0.0.0
+      --port 5000
+
+
 volumes:
   postgres-db-volume-airflow:
+  postgres-db-volume-mlflow:
+  minio_data:
+  mlruns:
