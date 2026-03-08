@@ -370,7 +370,7 @@ services:
       AWS_SECRET_ACCESS_KEY: minio123
       MLFLOW_S3_ENDPOINT_URL: http://minio:9000
     volumes:
-      - mlruns:/mlruns
+      - ./mlruns:/mlruns
     command: >
       mlflow server
       --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow:5432/mlflow
