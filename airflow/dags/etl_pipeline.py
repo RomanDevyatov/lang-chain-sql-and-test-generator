@@ -11,7 +11,7 @@ def run_etl_task():
 with DAG(
     dag_id="genai_etl",
     start_date=datetime(2026, 2, 27),
-    schedule_interval="@daily",
+    schedule="@daily",
     catchup=False
 ) as dag:
 

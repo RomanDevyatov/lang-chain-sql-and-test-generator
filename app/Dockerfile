@@ -7,6 +7,7 @@ RUN pip install poetry --no-cache-dir
 COPY app/pyproject.toml app/poetry.lock* /app/
 
 RUN poetry config virtualenvs.create false \
+    && poetry lock \
     && poetry install --no-interaction --no-ansi --no-root
 
 COPY app/genaidrivenetl /app/genaidrivenetl
