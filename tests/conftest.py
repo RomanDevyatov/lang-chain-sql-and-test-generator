@@ -84,21 +84,6 @@ def user_metrics_df(run_etl):
     #     f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
     #     run_etl
     # )
-    # conn = run_etl.raw_connection()  # это возвращает объект с .cursor()
-    # try:
-    #     df = pd.read_sql(
-    #         f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
-    #         conn
-    #     )
-    # finally:
-    #     conn.close()
-    # return df
-
-    # df = pd.read_sql(
-    #     f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id",
-    #     run_etl  # engine напрямую
-    # )
-    # return df
 
     with run_etl.connect() as conn:
         result = conn.execute(text(f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id"))
