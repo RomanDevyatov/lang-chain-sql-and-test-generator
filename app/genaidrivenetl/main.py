@@ -15,7 +15,7 @@ load_dotenv()
 Config.ensure_directories()
 setup_logging()
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri(Config.MLFLOW_TRACKING_URI)
 mlflow.langchain.autolog()
 
 
