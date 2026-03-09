@@ -83,6 +83,11 @@ x-airflow-common:
     MLFLOW_TRACKING_URI: http://mlflow:5000
     OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
 
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+    MLFLOW_S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
+
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -306,12 +311,25 @@ services:
     volumes:
       - minio-data:/data
 
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+        sleep 5;
+        mc alias set myminio http://minio:9000 minio minio123;
+        mc mb myminio/mlflow --ignore-existing;
+        exit 0;
+      "
+
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
     container_name: mlflow-server
     depends_on:
       - postgres-mlflow
       - minio
+      - createbuckets
     ports:
       - "5000:5000"
     environment:

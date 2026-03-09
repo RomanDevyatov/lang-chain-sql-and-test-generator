@@ -16,6 +16,8 @@ def save_sql(sql: str) -> str:
 
     start = time.perf_counter()
 
+    SQL_PATH.parent.mkdir(parents=True, exist_ok=True)
+
     SQL_PATH.write_text(sql)
 
     mlflow.log_artifact(str(SQL_PATH), artifact_path="sql")
@@ -37,6 +39,8 @@ def save_raw_tests(tests: str) -> str:
         return tests
 
     start = time.perf_counter()
+
+    GEN_TEST_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     GEN_TEST_PATH.write_text(tests)
 

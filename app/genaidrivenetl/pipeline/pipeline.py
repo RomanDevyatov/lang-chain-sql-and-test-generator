@@ -36,6 +36,7 @@ def build_pipeline(llm):
         | gen_sql_chain
         | log_with_preview("Saving SQL to disk...")
         | RunnableLambda(save_sql)
+        | log_with_preview("Preparing gen test to disk...")
         | RunnableLambda(prepare_gen_test_inputs)
         | log_with_preview("Generating tests...")
         | gen_test_chain
