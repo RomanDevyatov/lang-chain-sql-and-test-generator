@@ -5,9 +5,9 @@ set -e
 # Load env variables
 # ==============================
 
-set -a
-source .env
-set +a
+# set -a
+# source .env
+# set +a
 
 # ==============================
 # Paths

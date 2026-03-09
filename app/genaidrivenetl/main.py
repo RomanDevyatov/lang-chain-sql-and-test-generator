@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 Config.ensure_directories()
-setup_logging()
+setup_logging(is_stdout=True)
 
 mlflow.set_tracking_uri(Config.MLFLOW_TRACKING_URI)
 mlflow.langchain.autolog()
@@ -53,6 +53,5 @@ def run_pipeline():
 
 
 if __name__ == "__main__":
-    # run_pipeline()
-    print("hello")
+    run_pipeline()
     

@@ -3,8 +3,8 @@ FROM apache/airflow:3.0.6-python3.11
 USER airflow
 
 COPY app/ /opt/airflow
-COPY db /opt/airflow
-COPY scripts /opt/airflow
+COPY db/ /opt/airflow/db
+COPY --chown=airflow:0 scripts/ /opt/airflow/scripts
 
 RUN pip install --upgrade pip \
     && pip install poetry --no-cache-dir

@@ -19,7 +19,7 @@ logger = logging.getLogger(__file__)
 def log_with_preview(message: str):
     def _log(x):
         logger.info(
-            f"{message} | Preview: {str(x)[:200]}{'...' if len(str(x)) > 200 else ''}"
+            f"{message} | Preview: {str(x)[:100]}{'...' if len(str(x)) > 100 else ''}"
         )
         return x
 
