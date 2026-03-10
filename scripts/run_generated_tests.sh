@@ -13,15 +13,22 @@ set -e
 # Run generated tests
 # ==============================
 
-TEST_FILE=tests/generated_tests.py
+PROJECT_DIR=/opt/airflow
+POETRY_BIN=/home/airflow/.local/bin/poetry
+TEST_FILE=$PROJECT_DIR/tests/generated/generated_tests.py
 
 if [ ! -f "$TEST_FILE" ]; then
     echo "Error: $TEST_FILE not found! Please generate tests first."
     exit 1
 fi
 
-echo "Running generated tests: $TEST_FILE"
+export PATH="/home/airflow/.local/bin:$PATH"
 
-poetry run pytest -v "$TEST_FILE"
+export POETRY_VIRTUALENVS_CREATE=false
+
+echo "Running generated tests: $TEST_FILE"
+cd $PROJECT_DIR
+
+$POETRY_BIN run pytest -v "$TEST_FILE"
 
 echo "Generated tests completed successfully"

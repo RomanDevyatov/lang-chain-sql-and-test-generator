@@ -3,7 +3,7 @@ from datetime import datetime
 from airflow.operators.python import PythonOperator
 
 from airflow import DAG
-from app.genaidrivenetl.main import run_pipeline
+from genaidrivenetl.main import run_pipeline
 
 def run_etl_task():
     run_pipeline()

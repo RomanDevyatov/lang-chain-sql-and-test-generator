@@ -2,7 +2,7 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
-from app.genaidrivenetl.main import run_pipeline
+from genaidrivenetl.main import run_pipeline
 from airflow.sdk.definitions.template import literal
 
 with DAG(
@@ -15,6 +15,7 @@ with DAG(
     # -----------------------------
     # Python ETL pipeline
     # -----------------------------
+
     gen_sql_and_test = PythonOperator(
         task_id="run_etl",
         python_callable=run_pipeline
@@ -23,6 +24,7 @@ with DAG(
     # -----------------------------
     # Bash scripts
     # -----------------------------
+    
     init_db = BashOperator(
         task_id="init_db",
         bash_command=literal("/opt/airflow/scripts/init_db.sh")

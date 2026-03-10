@@ -5,9 +5,13 @@ import sys
 import sqlparse
 from sqlalchemy import create_engine, text
 
+from genaidrivenetl.config import Config
+
+
 logger = logging.getLogger(__name__)
 
-SQL_PATH = "data/generated_outputs/sql/etl.sql"
+
+SQL_PATH = Config.GENERATED_SQL_PATH
 
 
 def validate_syntax():
@@ -35,7 +39,7 @@ def validate_execution():
             for statement in statements:
                 if statement.strip():
                     conn.execute(text(statement))
-            raise Exception("Force rollback")  # откатываем dry-run
+            raise Exception("Force rollback")
     except Exception:
         logger.info("SQL executes cleanly (dry run) — rolled back")
 

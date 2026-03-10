@@ -42,7 +42,8 @@ def save_raw_tests(tests: str) -> str:
 
     GEN_TEST_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    GEN_TEST_PATH.write_text(tests)
+    tests_clean = tests.replace("```python", "").replace("```", "")
+    GEN_TEST_PATH.write_text(tests_clean)
 
     mlflow.log_artifact(str(GEN_TEST_PATH), artifact_path="tests")
 

@@ -7,6 +7,7 @@ from sqlalchemy import create_engine, text
 
 from genaidrivenetl.config import Config
 
+
 logger = logging.getLogger(__name__)
 
 

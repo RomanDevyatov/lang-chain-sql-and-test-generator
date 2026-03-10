@@ -9,12 +9,14 @@ set -e
 # source .env
 # set +a
 
+export PGPASSWORD=$DB_PASSWORD
+
 # ==============================
 # Paths
 # ==============================
 
-INIT_SQL=db/init.sql
-LOAD_SQL=db/load_data.sql
+INIT_SQL=/opt/airflow/db/init.sql
+LOAD_SQL=/opt/airflow/db/load_data.sql
 
 echo "Initializing database: $DB_NAME"
 

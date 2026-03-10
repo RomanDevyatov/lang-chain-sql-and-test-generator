@@ -77,7 +77,6 @@ x-airflow-common:
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
 #    AIRFLOW__SIMPLE_AUTH_MANAGER__USERS: admin:admin
-    # PYTHONPATH: /opt/airflow
 
     DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres-app:5432/${DB_NAME}
     MLFLOW_TRACKING_URI: http://mlflow:5000
@@ -88,13 +87,26 @@ x-airflow-common:
     AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
     MLFLOW_S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
 
+    DB_HOST: ${DB_HOST}
+    DB_PORT: ${DB_PORT}
+    DB_USER: ${DB_USER}
+    DB_PASSWORD: ${DB_PASSWORD}
+    DB_NAME: ${DB_NAME}
+    VIEW_NAME: ${VIEW_NAME}
+    STAGING_VIEW_NAME: ${STAGING_VIEW_NAME}
+
+    POETRY_HOME: /opt/airflow/.poetry
+    POETRY_CACHE_DIR: /opt/airflow/.cache/pypoetry
+
+    AIRFLOW_UID: 50000
+  user: "50000:0"
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ./app:/opt/airflow/app
-  user: "${AIRFLOW_UID:-50000}:0"
+    - ./tests:/opt/airflow/tests
+    - ./data:/opt/airflow/data
   depends_on:
     &airflow-common-depends-on
 #    redis:
@@ -130,6 +142,7 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    # user: "50000:0"
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -145,6 +158,7 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    # user: "50000:0"
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
