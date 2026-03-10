@@ -99,6 +99,10 @@ x-airflow-common:
     POETRY_CACHE_DIR: /opt/airflow/.cache/pypoetry
 
     AIRFLOW_UID: 50000
+    POETRY_BIN: /home/airflow/.local/bin/poetry
+
+    PYTHONDONTWRITEBYTECODE: 1
+
   user: "50000:0"
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags

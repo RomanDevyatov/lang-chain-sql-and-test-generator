@@ -13,8 +13,10 @@ set -e
 # Run generated tests
 # ==============================
 
+# POETRY_BIN=/home/airflow/.local/bin/poetry
+: "${POETRY_BIN:?Need POETRY_BIN}"
+
 PROJECT_DIR=/opt/airflow
-POETRY_BIN=/home/airflow/.local/bin/poetry
 TEST_FILE=$PROJECT_DIR/tests/generated/generated_tests.py
 
 if [ ! -f "$TEST_FILE" ]; then
@@ -29,6 +31,6 @@ export POETRY_VIRTUALENVS_CREATE=false
 echo "Running generated tests: $TEST_FILE"
 cd $PROJECT_DIR
 
-$POETRY_BIN run pytest -v "$TEST_FILE"
+"$POETRY_BIN" run pytest -v "$TEST_FILE"
 
 echo "Generated tests completed successfully"
