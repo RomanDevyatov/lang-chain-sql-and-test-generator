@@ -1,0 +1,27 @@
+The following ETL pipeline failed.
+
+SQL:
+{sql}
+
+Generated tests:
+{tests}
+
+Pytest output:
+{error}
+
+Your job is to fix the pipeline.
+
+Rules:
+
+1. If the SQL is incorrect, fix the SQL.
+2. If the tests are incorrect, fix the tests.
+3. If both are incorrect, fix both.
+
+Return the result in JSON:
+
+{
+  "sql": "...",
+  "tests": "..."
+}
+
+Return ONLY JSON.

@@ -1,0 +1,10 @@
+The generated pytest file failed.
+
+Error:
+{error}
+
+Tests:
+{tests}
+
+Fix the tests so they run correctly.
+Return only valid Python code.

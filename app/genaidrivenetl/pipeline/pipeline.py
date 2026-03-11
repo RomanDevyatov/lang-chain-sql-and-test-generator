@@ -1,5 +1,7 @@
 import logging
 
+import json
+
 from langchain_core.runnables import RunnableLambda
 
 from genaidrivenetl.config import Config
@@ -13,6 +15,8 @@ from genaidrivenetl.pipeline.inputs import (
     prepare_gen_sql_inputs,
     prepare_gen_test_inputs,
 )
+
+from .feedback import universal_feedback_loop
 
 logger = logging.getLogger(__file__)
 
@@ -30,6 +34,7 @@ def log_with_preview(message: str):
 def build_pipeline(llm):
     gen_sql_chain = build_chain(llm, Config.SQL_PROMPT_PATH)
     gen_test_chain = build_chain(llm, Config.TEST_PROMPT_PATH)
+    fix_chain = build_chain(llm, Config.FIX_PIPELINE_PROMPT_PATH)
 
     return (
         log_with_preview("Preparing gen SQL inputs...")
@@ -46,4 +51,11 @@ def build_pipeline(llm):
         | RunnableLambda(strip_markdown)
         | log_with_preview("Saving tests to disk...")
         | RunnableLambda(save_raw_tests)
+
+        | log_with_preview("Running feedback loop...")
+        | RunnableLambda(lambda state: universal_feedback_loop(state, fix_chain))
     )
+
+
+
+
