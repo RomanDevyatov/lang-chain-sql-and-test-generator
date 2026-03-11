@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 
 import os
 
+
 def run_tests(test_file, maxfail=1):
     logger.info(f"Running tests: {test_file}")
 
@@ -12,7 +13,7 @@ def run_tests(test_file, maxfail=1):
         ["poetry", "run", "pytest", test_file, "-v", f"--maxfail={maxfail}"],
         cwd="/opt/airflow",
         capture_output=True,
-        text=True
+        text=True,
     )
 
     output = result.stdout + result.stderr

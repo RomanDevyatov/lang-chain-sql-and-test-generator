@@ -51,11 +51,6 @@ def build_pipeline(llm):
         | RunnableLambda(strip_markdown)
         | log_with_preview("Saving tests to disk...")
         | RunnableLambda(save_raw_tests)
-
         | log_with_preview("Running feedback loop...")
         | RunnableLambda(lambda state: universal_feedback_loop(state, fix_chain))
     )
-
-
-
-
