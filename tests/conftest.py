@@ -7,7 +7,6 @@ from sqlalchemy import create_engine, text
 
 from genaidrivenetl.config import Config
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -87,8 +86,10 @@ def user_metrics_df(run_etl):
     # )
 
     with run_etl.connect() as conn:
-        result = conn.execute(text(f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id"))
+        result = conn.execute(
+            text(
+                f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id"
+            )
+        )
         df = pd.DataFrame(result.fetchall(), columns=result.keys())
     return df
-
-

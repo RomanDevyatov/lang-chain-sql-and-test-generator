@@ -58,7 +58,7 @@ def strip_markdown(code) -> str:
 
     code = re.sub(r"```python", "", code)
     code = re.sub(r"```sql", "", code)
-    
+
     code = re.sub(r"```", "", code)
 
     return code.strip()
