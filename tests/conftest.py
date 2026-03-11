@@ -87,9 +87,7 @@ def user_metrics_df(run_etl):
 
     with run_etl.connect() as conn:
         result = conn.execute(
-            text(
-                f"SELECT * FROM {Config.STAGING_VIEW_NAME} ORDER BY user_id"
-            )
+            text(f"SELECT * FROM {Config.STAGING_VIEW_NAME} ORDER BY user_id")
         )
         df = pd.DataFrame(result.fetchall(), columns=result.keys())
     return df
