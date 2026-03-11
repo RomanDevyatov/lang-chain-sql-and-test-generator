@@ -3,8 +3,6 @@ import subprocess
 
 logger = logging.getLogger(__name__)
 
-import os
-
 
 def run_tests(test_file, maxfail=1):
     logger.info(f"Running tests: {test_file}")

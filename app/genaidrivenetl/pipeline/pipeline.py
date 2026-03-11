@@ -1,7 +1,4 @@
-import json
 import logging
-
-from langchain_core.runnables import RunnableLambda
 
 from genaidrivenetl.config import Config
 from genaidrivenetl.infrastructure.file_storage import (
@@ -14,6 +11,7 @@ from genaidrivenetl.pipeline.inputs import (
     prepare_gen_sql_inputs,
     prepare_gen_test_inputs,
 )
+from langchain_core.runnables import RunnableLambda
 
 from .feedback import universal_feedback_loop
 
