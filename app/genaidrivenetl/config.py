@@ -30,8 +30,8 @@ class Config:
 
     # ========= SQL =========
 
-    USER_METRICS_VIEW_NAME = os.getenv("VIEW_NAME")
-    USER_METRICS_STAGING_VIEW_NAME = os.getenv("STAGING_VIEW_NAME")
+    VIEW_NAME = os.getenv("VIEW_NAME")
+    STAGING_VIEW_NAME = os.getenv("STAGING_VIEW_NAME")
 
     RAW_SCHEMA = """
     raw_events(

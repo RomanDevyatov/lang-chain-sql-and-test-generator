@@ -38,7 +38,7 @@ def engine():
 def run_etl(engine):
     validate_etl_sql(engine, ETL_SQL_PATH)
     execute_etl(engine, ETL_SQL_PATH)
-    logger.info(f"ETL SQL completed — view {Config.USER_METRICS_VIEW_NAME} created")
+    logger.info(f"ETL SQL completed — view {Config.VIEW_NAME} created")
     return engine
 
 
@@ -88,7 +88,7 @@ def user_metrics_df(run_etl):
     with run_etl.connect() as conn:
         result = conn.execute(
             text(
-                f"SELECT * FROM {Config.USER_METRICS_STAGING_VIEW_NAME} ORDER BY user_id"
+                f"SELECT * FROM {Config.STAGING_VIEW_NAME} ORDER BY user_id"
             )
         )
         df = pd.DataFrame(result.fetchall(), columns=result.keys())

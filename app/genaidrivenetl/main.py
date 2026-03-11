@@ -49,7 +49,7 @@ def run_pipeline():
             mlflow.set_tag("run_status", "failed")
             mlflow.log_text(str(e), "error.txt")
 
-            raise  # важно
+            raise
 
 
 if __name__ == "__main__":
