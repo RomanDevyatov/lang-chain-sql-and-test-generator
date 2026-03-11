@@ -16,10 +16,10 @@ def universal_feedback_loop(state, fix_chain):
 
     for attempt in range(MAX_RETRIES):
 
-        result = run_tests(state)
+        result = run_tests("tests/generated/generated_tests.py")
 
         if result["success"]:
-            logger.info("Tests passed")
+            logger.info("Tests passed!")
             return state
 
         logger.error(f"Attempt {attempt + 1} failed. Output:\n{result['output']}")

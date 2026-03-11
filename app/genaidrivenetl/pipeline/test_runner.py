@@ -5,23 +5,14 @@ logger = logging.getLogger(__name__)
 
 import os
 
-def run_tests(
-        test_file="tests/generated/generated_tests.py",
-        maxfail=1, poetry_bin="/home/airflow/.local/bin/poetry",
-        project_dir="/opt/airflow"
-):
-    env = os.environ.copy()
-    env["POETRY_VIRTUALENVS_CREATE"] = "false"
-    env["PATH"] = "/home/airflow/.local/bin:" + env["PATH"]
-
+def run_tests(test_file, maxfail=1):
     logger.info(f"Running tests: {test_file}")
 
     result = subprocess.run(
-        [poetry_bin, "run", "pytest", test_file, "-v", f"--maxfail={maxfail}"],
+        ["poetry", "run", "pytest", test_file, "-v", f"--maxfail={maxfail}"],
+        cwd="/opt/airflow",
         capture_output=True,
-        text=True,
-        cwd=project_dir,
-        env=env
+        text=True
     )
 
     output = result.stdout + result.stderr
