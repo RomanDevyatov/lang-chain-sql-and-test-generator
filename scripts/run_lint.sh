@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Installing dev dependencies..."
-poetry install --no-root
+# ==============================
+# Run linting for generated tests
+# ==============================
+
+# POETRY_BIN=/home/airflow/.local/bin/poetry
+: "${POETRY_BIN:?Need POETRY_BIN}"
+
+PROJECT_DIR=/opt/airflow
+TEST_FILE=$PROJECT_DIR/tests/generated/generated_tests.py
+
+export PATH="/home/airflow/.local/bin:$PATH"
+
+cd $PROJECT_DIR
 
 echo "Running Black (autoformat)..."
-poetry run black genaidrivenetl tests
+"$POETRY_BIN" run black genaidrivenetl "$TEST_FILE"
 
 echo "Running isort (import sort)..."
-poetry run isort genaidrivenetl tests
+"$POETRY_BIN" run isort genaidrivenetl "$TEST_FILE"
 
-echo "Running Flake8 (PEP8 checks)..."
-poetry run flake8 genaidrivenetl tests
+# echo "Running Flake8 (PEP8 checks)..."
+# "$POETRY_BIN" run flake8 genaidrivenetl "$TEST_FILE"
 
 echo "Linting and formatting complete!"

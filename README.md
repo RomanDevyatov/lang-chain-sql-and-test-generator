@@ -73,6 +73,8 @@ This project treats **LLM-generated code as a first-class engineering artifact**
 - PEP8 linting (Black, isort, Flake8)
 - Fully reproducible environment via `Poetry`
 
+Fully reproducible environment via Poetry
+
 ---
 
 ## Agentic Workflow Components
@@ -85,7 +87,8 @@ This project treats **LLM-generated code as a first-class engineering artifact**
 
 ---
 
-## Setup
+## Local Setup without Docker and Airflow
+
 ### 0) Requirements
 
 - Python 3.11+
@@ -122,17 +125,17 @@ poetry install
 ### 3) Create .env file in the project root:
 
  * OPENROUTER_API_KEY=your_openrouter_key
- * DB_NAME=genai_etl_db_any
+ * DB_NAME=any_db_name
  * DB_HOST=localhost
  * DB_PORT=5432
- * DB_USER=your_db_user
- * DB_PASSWORD=your_db_password
- * VIEW_NAME=your_table_name_any
- * STAGING_VIEW_NAME=your_staging_table_name_any
+ * DB_USER=any_db_user
+ * DB_PASSWORD=any_db_password
+ * VIEW_NAME=any_table_name
+ * STAGING_VIEW_NAME=your_any_staging_table_name
 
 ### 4) Run pipeline:
 ```bash
-./scripts/run_all.sh
+./scripts/old_fashion/run_all.sh
 ```
 - _This script sequentially runs:_
   - init_db.sh
@@ -141,14 +144,212 @@ poetry install
   - run_commit_views.sh
   - run_lint.sh
 
----
-
-## macOS users
+### *macOS users
 
 Make scripts executable:
 
 ```bash
-chmod +x ./scripts/*.sh
+chmod +x ./scripts/old_fashion/*.sh
+```
+
+---
+
+## Running the Project with Docker Compose
+
+This project uses **Docker Compose** to run the full stack locally, including:
+
+- **Apache Airflow** (API server, scheduler, DAG processor, triggerer)
+- **PostgreSQL** (for Airflow, MLflow and application DB)
+- **MLflow** (experiment tracking)
+- **MinIO** (S3-compatible artifact storage)
+
+---
+
+### Prerequisites
+
+Make sure you have installed:
+
+- Docker
+- Docker Compose
+
+Recommended resources for Docker:
+
+- **15 GB free disk space**
+
+---
+
+### Environment Variables
+
+Create a `.env` file in the project root.
+
+Example:
+
+```env
+AIRFLOW_UID=5000
+DB_HOST=postgres-app
+DB_PORT=5432
+DB_USER=app
+DB_PASSWORD=app
+DB_NAME=app
+
+AIRFLOW_DB_USER=airflow
+AIRFLOW_DB_PASSWORD=airflow
+AIRFLOW_DB_NAME=airflow
+
+AIRFLOW_PROJ_DIR=./airflow
+MLFLOW_TRACKING_URI=http://mlflow:5000
+
+VIEW_NAME=any_view_name
+STAGING_VIEW_NAME=any_staging_view_name
+
+AWS_ACCESS_KEY_ID=minio
+AWS_SECRET_ACCESS_KEY=minio123
+AWS_DEFAULT_REGION=us-east-1
+
+S3_ENDPOINT_URL=http://minio:9000
+MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+
+OPENROUTER_API_KEY=your_api_key (Obtain it on https://openrouter.ai/)
+```
+
+### Build and Start the Stack
+
+Option 1: Build images and start all services:
+
+```cmd
+docker compose up --build
+```
+
+Option 2: Run in detached mode:
+```cmd
+docker compose up -d --build
+```
+
+---
+
+### First Initialization
+
+During the first run, the container airflow-init will:
+
+- initialize the Airflow database
+
+- run DB migrations
+
+- create a default Airflow user
+
+Default credentials:
+
+    username: airflow
+    password: airflow
+
+### Available Services
+
+After startup the following services will be available:
+
+| Service         | URL                   | Description                     |
+|-----------------|----------------------|---------------------------------|
+| Airflow UI      | http://localhost:8080 | Airflow web interface           |
+| MLflow          | http://localhost:5000 | Experiment tracking server      |
+| MinIO API       | http://localhost:9000 | S3-compatible storage           |
+| MinIO Console   | http://localhost:9001 | MinIO web UI                    |
+| Airflow Postgres| localhost:5432        | Airflow database                |
+| App Postgres    | localhost:5434        | Application database            |
+| MLflow Postgres | localhost:5433        | MLflow metadata database        |
+
+MinIO credentials:
+
+    user: minio
+    password: minio123
+
+### Project Volumes
+
+The following directories are mounted into containers:
+```
+airflow/dags/        -> Airflow DAGs
+airflow/logs/        -> Airflow logs
+airflow/config/      -> Airflow configuration
+airflow/plugins/     -> Airflow plugins
+tests/               -> test files
+data/                -> project data
+```
+Changes in these folders are reflected immediately inside the containers.
+
+### Stop the Stack
+
+Stop containers:
+```cmd
+docker compose down
+```
+
+Stop and remove volumes (deletes all databases):
+```cmd
+docker compose down -v
+```
+
+---
+
+## 🕹 Running the Pipeline via Airflow
+
+The pipeline can now be executed and orchestrated using **Apache Airflow**.  
+This enables scheduling, monitoring, and logging for all generated SQL and test jobs.
+
+### Airflow DAG
+
+- A DAG named `generate_sql_and_test` is included in the `airflow/dags/` folder.
+- The DAG automates the following steps:
+  1. **Metadata ingestion** – loads raw schema & business rules
+  2. **SQL generation** – generates SQL transformations using the LLM
+  3. **SQL validation** – ensures generated queries are correct
+  4. **Test generation** – creates pytest tests for each SQL transformation
+  5. **Execution & quality gate** – runs tests and promotes to production view if passed
+  6. **Logging** – all parameters, artifacts, and results are tracked in **MLflow**
+
+### Running the DAG
+
+1. Make sure the Docker Compose stack is running:
+
+```bash
+docker compose up -d --build
+```
+
+2. Open the Airflow UI:
+```
+http://localhost:8080
+```
+
+3. Locate the generate_sql_and_test DAG in the Airflow DAGs list.
+
+4. Trigger the DAG manually or let it run on a schedule (if configured).
+
+5. Monitor logs for each task directly from the Airflow UI.
+
+
+### Airflow CLI
+
+Run Airflow commands via CLI container:
+```cmd
+docker compose run --rm airflow-cli airflow <command>
+```
+Example:
+```cmd
+docker compose run --rm airflow-cli airflow dags list
+```
+
+### Local Development
+
+Place your DAGs in the `dags/` folder.
+
+Place custom plugins in `plugins/`.
+
+Place test data in `data/`.
+
+Install Python dependencies inside Airflow container if needed:
+```cmd
+docker compose run --rm airflow-cli pip install <package>
+```
+Run tests:
+```cmd
+docker compose run --rm airflow-cli pytest /opt/airflow/tests
 ```
 
 ---
@@ -169,6 +370,9 @@ Each run logs input parameters and test/SQL metrics.
 4. **Artifacts**  
 Generated SQL and tests are stored as MLflow artifacts.  
 ![mlflow_artifacts.png](screenshots/mlflow/img_3.png)
+
+5. **MinIO**
+![minio.png](screenshots/mlflow/minio.png)
 
 ---
 
@@ -216,6 +420,7 @@ Optional: Run full lint script:
 ```bash
 ./scripts/run_lint.sh
 ```
+
 ---
 
 ## Notes
@@ -238,7 +443,15 @@ Optional: Run full lint script:
 
 ---
 
-## Screenshots
+## Screenshots (Airflow)
+
+![air1.png](screenshots/airflow/air1.png)
+![air2.png](screenshots/airflow/air2.png)
+![air3.png](screenshots/airflow/air3.png)
+
+---
+
+## Screenshots (Local Setup)
 
 1. Prompt to generate SQL query
 ![img_1.png](screenshots/img_1.png)

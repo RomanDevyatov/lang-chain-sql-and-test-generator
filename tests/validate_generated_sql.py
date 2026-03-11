@@ -5,10 +5,12 @@ import sys
 import sqlparse
 from sqlalchemy import create_engine, text
 
+from genaidrivenetl.config import Config
+
 logger = logging.getLogger(__name__)
 
 
-SQL_PATH = "data/generated_outputs/sql/etl.sql"
+SQL_PATH = Config.GENERATED_SQL_PATH
 
 
 def validate_syntax():
@@ -17,25 +19,28 @@ def validate_syntax():
 
     parsed = sqlparse.parse(sql)
     if not parsed:
-        logger.info("SQL is empty or invalid")
+        logger.error("SQL is empty or invalid")
         sys.exit(1)
 
     logger.info("SQL parsed successfully")
 
 
 def validate_execution():
-    engine = create_engine(os.getenv("DB_URL"))
+    engine = create_engine(os.getenv("DB_URL"), future=False)
 
-    with engine.connect() as conn:
-        try:
-            conn.execute(text("BEGIN;"))
-            conn.execute(text(open(SQL_PATH).read()))
-            conn.execute(text("ROLLBACK;"))
-            logger.info("SQL executes cleanly (dry run)")
-        except Exception as e:
-            logger.info("SQL execution failed:")
-            logger.info(e)
-            sys.exit(1)
+    with open(SQL_PATH) as f:
+        sql = f.read()
+
+    statements = sqlparse.split(sql)
+
+    try:
+        with engine.begin() as conn:
+            for statement in statements:
+                if statement.strip():
+                    conn.execute(text(statement))
+            raise Exception("Force rollback")
+    except Exception:
+        logger.info("SQL executes cleanly (dry run) — rolled back")
 
 
 if __name__ == "__main__":

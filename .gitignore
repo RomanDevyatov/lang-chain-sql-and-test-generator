@@ -216,3 +216,4 @@ tests/generated_tests.py
 # mlflow
 mlflow.db
 mlartifacts/
+mlruns/

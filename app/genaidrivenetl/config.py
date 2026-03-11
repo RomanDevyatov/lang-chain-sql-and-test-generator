@@ -12,12 +12,11 @@ class Config:
 
     PROJECT_ROOT = Path(__file__).resolve().parents[1]
     DATA_DIR = PROJECT_ROOT / "data"
-    OUTPUTS_DIR = DATA_DIR / "generated_outputs"
     LOG_DIR = DATA_DIR / "logs"
 
     PROMPTS_DIR = PROJECT_ROOT / "genaidrivenetl" / "prompts"
-    GENERATED_SQL_PATH = OUTPUTS_DIR / "sql" / "etl.sql"
-    GENERATED_TESTS_PATH = PROJECT_ROOT / "tests" / "generated_tests.py"
+    GENERATED_SQL_PATH = DATA_DIR / "generated_outputs" / "sql" / "etl.sql"
+    GENERATED_TESTS_PATH = PROJECT_ROOT / "tests" / "generated" / "generated_tests.py"
 
     # ========= MLFLOW ======
 
@@ -31,8 +30,8 @@ class Config:
 
     # ========= SQL =========
 
-    USER_METRICS_VIEW_NAME = os.getenv("VIEW_NAME")
-    USER_METRICS_STAGING_VIEW_NAME = os.getenv("STAGING_VIEW_NAME")
+    VIEW_NAME = os.getenv("VIEW_NAME")
+    STAGING_VIEW_NAME = os.getenv("STAGING_VIEW_NAME")
 
     RAW_SCHEMA = """
     raw_events(
@@ -73,7 +72,6 @@ class Config:
     - Do not define or redefine fixtures.
     - Output strictly plain Python code.
     - Never use markdown formatting.
-    - Never use backticks (`).
     - Do not include explanations, comments, or text outside code.
     - Do not wrap code in any code blocks.
     """
@@ -93,6 +91,6 @@ class Config:
 
     @classmethod
     def ensure_directories(cls):
-        for p in [cls.DATA_DIR, cls.OUTPUTS_DIR, cls.LOG_DIR]:
+        for p in [cls.DATA_DIR, cls.LOG_DIR]:
             if not p.exists():
                 p.mkdir(parents=True, exist_ok=True)

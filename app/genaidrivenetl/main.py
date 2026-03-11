@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 Config.ensure_directories()
-setup_logging()
+setup_logging(is_stdout=True)
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri(Config.MLFLOW_TRACKING_URI)
 mlflow.langchain.autolog()
 
 
@@ -49,7 +49,7 @@ def run_pipeline():
             mlflow.set_tag("run_status", "failed")
             mlflow.log_text(str(e), "error.txt")
 
-            raise  # важно
+            raise
 
 
 if __name__ == "__main__":
