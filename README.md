@@ -225,6 +225,8 @@ Option 2: Run in detached mode:
 docker compose up -d --build
 ```
 
+---
+
 ### First Initialization
 
 During the first run, the container airflow-init will:
@@ -259,7 +261,6 @@ MinIO credentials:
     user: minio
     password: minio123
 
-
 ### Project Volumes
 
 The following directories are mounted into containers:
@@ -284,6 +285,44 @@ Stop and remove volumes (deletes all databases):
 ```cmd
 docker compose down -v
 ```
+
+---
+
+## 🕹 Running the Pipeline via Airflow
+
+The pipeline can now be executed and orchestrated using **Apache Airflow**.  
+This enables scheduling, monitoring, and logging for all generated SQL and test jobs.
+
+### Airflow DAG
+
+- A DAG named `generate_sql_and_test` is included in the `airflow/dags/` folder.
+- The DAG automates the following steps:
+  1. **Metadata ingestion** – loads raw schema & business rules
+  2. **SQL generation** – generates SQL transformations using the LLM
+  3. **SQL validation** – ensures generated queries are correct
+  4. **Test generation** – creates pytest tests for each SQL transformation
+  5. **Execution & quality gate** – runs tests and promotes to production view if passed
+  6. **Logging** – all parameters, artifacts, and results are tracked in **MLflow**
+
+### Running the DAG
+
+1. Make sure the Docker Compose stack is running:
+
+```bash
+docker compose up -d --build
+```
+
+2. Open the Airflow UI:
+```
+http://localhost:8080
+```
+
+3. Locate the generate_sql_and_test DAG in the Airflow DAGs list.
+
+4. Trigger the DAG manually or let it run on a schedule (if configured).
+
+5. Monitor logs for each task directly from the Airflow UI.
+
 
 ### Airflow CLI
 
