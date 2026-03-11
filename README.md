@@ -21,7 +21,7 @@ graph TD
 
     subgraph "Feedback Loop"
         LLMfixPipeline -->|Fixed SQL/Tests| PytestSuite[Pytest Generated Tests]
-        SuiPytestSuitete1 -->|Fail| LLMfixPipeline(LLM Fix Agent)
+        PytestSuite -->|Fail| LLMfixPipeline(LLM Fix Agent)
         TestGenNode --> PytestSuite        
     end
         
@@ -54,26 +54,28 @@ graph TD
     end
 
     subgraph "Prod"
-        Executor -->|Pass/Write| Production[(Prod View)]
+        Executor -->|Pass/Write| ProdView[(Prod View)]
         Executor -->|Fail| Rollback[Rollback]
     end
     
     subgraph "BI and Analysts"
-        Production -.->|Read| Analyze
+        ProdView -.->|Read| Analyze
     end
 
     %% Colors and Styles
     classDef startEnd fill:#f5f5f5,stroke:#666,stroke-width:2px,color:#333;
     classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef testNode fill:#e2f6de,stroke:#666,stroke-width:2px;
     classDef storage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
     classDef action fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
     classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5;
 
-    class Start,End startEnd;
-    class SQLGenNode,TestGenNode,TestGenNode2 aiNode;
-    class Staging,Production storage;
-    class SQLValidator,Executor,Suite action;
+    class Start,Analyze,Ingestion startEnd;
+    class SQLGenNode,TestGenNode aiNode;
+    class Staging,ProdView,MinIO,PostgresMLflow,Table,GeneratedSql,GeneratedTests storage;
+    class SQLValidator,Executor,Suite,Rollback action;
     class MLflow,OpenRouter tracking;
+    class PytestSuite,LLMfixPipeline testNode;
 ```
 
 ---
