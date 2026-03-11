@@ -30,7 +30,7 @@ def save_sql(sql: str) -> str:
     return sql
 
 
-def read_gen_sql() -> dict:
+def read_gen_sql():
     return SQL_PATH.read_text()
 
 
