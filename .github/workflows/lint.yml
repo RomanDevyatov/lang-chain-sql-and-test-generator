@@ -30,10 +30,13 @@ jobs:
         working-directory: ./app
 
       - name: Check code formatting with Black
-        run: app/poetry run black --check genaidrivenetl tests
+        run: poetry run black --check genaidrivenetl ../tests
+        working-directory: ./app
 
       - name: Check import sorting with isort
-        run:  app/poetry run isort --check-only genaidrivenetl tests
+        run: poetry run isort --check-only genaidrivenetl ../tests
+        working-directory: ./app
 
       - name: Run Flake8
-        run:  app/poetry run flake8 genaidrivenetl tests
+        run: poetry run flake8 genaidrivenetl ../tests
+        working-directory: ./app
