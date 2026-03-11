@@ -70,6 +70,8 @@ This project treats **LLM-generated code as a first-class engineering artifact**
 - LLM-driven orchestration with `LangChain LCEL`
 - `MLflow` tracking for parameters, metrics, and artifacts
 - Rollback on test failure
+- Automatic feedback loop: If generated tests fail, the LLM attempts to fix SQL or tests automatically and retries execution up to `MAX_RETRIES`.
+- Test execution via Poetry ensures isolated, reproducible environment without relying on system Python or Docker.
 - PEP8 linting (Black, isort, Flake8)
 - Fully reproducible environment via `Poetry`
 
@@ -190,7 +192,7 @@ DB_HOST=postgres-app
 DB_PORT=5432
 DB_USER=app
 DB_PASSWORD=app
-DB_NAME=app
+DB_NAME=appdb
 
 AIRFLOW_DB_USER=airflow
 AIRFLOW_DB_PASSWORD=airflow
@@ -304,6 +306,12 @@ This enables scheduling, monitoring, and logging for all generated SQL and test 
   5. **Execution & quality gate** – runs tests and promotes to production view if passed
   6. **Logging** – all parameters, artifacts, and results are tracked in **MLflow**
 
+#### Feedback Loop for Failed Tests
+
+- The DAG includes a feedback loop that automatically invokes the LLM to correct failing SQL or test code.
+- This occurs immediately after the `run_generated_tests` task if any pytest checks fail.
+- Logs of attempts and corrections are recorded, and the pipeline retries up to `MAX_RETRIES` times before raising a runtime error.
+
 ### Running the DAG
 
 1. Make sure the Docker Compose stack is running:
@@ -399,6 +407,9 @@ user_metrics_view
 ```
 
 All artifacts are logged in MLflow, including parameters, metrics, and generated files.
+> Note: If the feedback loop fixes failing tests or SQL, the files in
+> `data/generated_outputs/sql/etl.sql` and `tests/generated/generated_tests.py`
+> may be updated automatically.
 
 ---
 
