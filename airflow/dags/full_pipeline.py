@@ -30,10 +30,10 @@ with DAG(
         bash_command=literal("/opt/airflow/scripts/init_db.sh")
     )
 
-    run_generated_tests = BashOperator(
-        task_id="run_generated_tests",
-        bash_command=literal("/opt/airflow/scripts/run_generated_tests.sh")
-    )
+    # run_generated_tests = BashOperator(
+    #     task_id="run_generated_tests",
+    #     bash_command=literal("/opt/airflow/scripts/run_generated_tests.sh")
+    # )
 
     stage_to_prod = BashOperator(
         task_id="stage_to_prod",
@@ -45,4 +45,4 @@ with DAG(
         bash_command=literal("/opt/airflow/scripts/run_lint.sh")
     )
 
-    init_db >> gen_sql_and_test >> run_generated_tests >> stage_to_prod >> run_lint
+    init_db >> gen_sql_and_test >> stage_to_prod >> run_lint

@@ -9,29 +9,57 @@ It demonstrates how LLM orchestration can be integrated into a production-style 
 
 ```mermaid
 graph TD
+    
     %% Nodes Definition
+    Table[("Raw Events Table")] --> Start
     Start([Raw Schema & Business Rules]) --> Ingestion[Metadata Ingestion]
+    
+    subgraph "AI Generation Engine (LangChain Pipeline)"
+        Ingestion -.-> SQLGenNode[Generate SQL]       
+        SQLGenNode --> TestGenNode[Generate Tests]
+    end
 
-    subgraph "AI Synthesis Engine"
-        Ingestion --> SQLGenNode[LLM SQL Architect]
-        SQLGenNode --> SQLValidator{SQL Validator}
-        SQLValidator -->|Success| TestGenNode[LLM Test Engineer]
+    subgraph "Feedback Loop"
+        LLMfixPipeline -->|Fixed SQL/Tests| PytestSuite[Pytest Generated Tests]
+        SuiPytestSuitete1 -->|Fail| LLMfixPipeline(LLM Fix Agent)
+        TestGenNode --> PytestSuite        
+    end
         
-        %% Operational Logs
+    subgraph "Open AI API"
+        OpenRouter -.->|SQL| SQLGenNode 
+        OpenRouter -.->|Tests| TestGenNode
+        SQLGenNode -.->|SQL prompt| OpenRouter
+        TestGenNode -.->|Test prompt| OpenRouter[OpenRouter API]
+    end
+    
+    subgraph "Tracking"
+        Ingestion -.->|Log| MLflow
         SQLGenNode -.->|Log| MLflow((MLflow Tracking))
         TestGenNode -.->|Log| MLflow
+        LLMfixPipeline -.->|Log| MLflow
+        MLflow -->|Write| MinIO[(MinIO)]
+        MLflow -->|Write| PostgresMLflow[(Postgres)]    
+    end
+    
+    subgraph "Data Quality"        
+        SQLValidator{Generated SQL Validator} -->|Write| Staging[(Staging View)]
+        PytestSuite -->|Pass| Executor
+        Staging -.-> PytestSuite
+        Staging -.-> Executor("Promote Staging View")
+    end
+    
+    subgraph "Generated files"
+        GeneratedSql['Generated SQL']
+        GeneratedTests['Generated Py Tests']
     end
 
-    subgraph "Data Quality & Persistence"
-        SQLValidator -->|Write| Staging[(PostgreSQL Staging)]
-        TestGenNode -->|Generate| Suite[Pytest Suite]
-        Suite --> Executor[Quality Gate / Runner]
-        Staging --> Executor
+    subgraph "Prod"
+        Executor -->|Pass/Write| Production[(Prod View)]
+        Executor -->|Fail| Rollback[Rollback]
     end
-
-    subgraph "Deployment"
-        Executor -->|Pass| Production[(Production View)]
-        Executor -->|Fail| Rollback[Circuit Breaker / Rollback]
+    
+    subgraph "BI and Analysts"
+        Production -.->|Read| Analyze
     end
 
     %% Colors and Styles
@@ -42,10 +70,10 @@ graph TD
     classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5;
 
     class Start,End startEnd;
-    class SQLGenNode,TestGenNode aiNode;
+    class SQLGenNode,TestGenNode,TestGenNode2 aiNode;
     class Staging,Production storage;
     class SQLValidator,Executor,Suite action;
-    class MLflow tracking;
+    class MLflow,OpenRouter tracking;
 ```
 
 ---
