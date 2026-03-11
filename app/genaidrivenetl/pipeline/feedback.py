@@ -1,9 +1,9 @@
 import json
 import logging
 
-from .test_runner import run_tests
 from ..config import Config
-from ..infrastructure.file_storage import save_sql, save_raw_tests
+from ..infrastructure.file_storage import save_raw_tests, save_sql
+from .test_runner import run_tests
 
 MAX_RETRIES = 3
 
