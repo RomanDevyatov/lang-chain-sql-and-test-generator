@@ -33,16 +33,16 @@ jobs:
         run: poetry run black --check genaidrivenetl tests
         working-directory: .
         env:
-          PYTHONPATH: app:$
+          PYTHONPATH: app:$PYTHONPATH
 
       - name: Check import sorting with isort
         run: poetry run isort --check-only genaidrivenetl tests
         working-directory: .
         env:
-          PYTHONPATH: app:$
+          PYTHONPATH: app:$PYTHONPATH
 
       - name: Run Flake8
         run: poetry run flake8 genaidrivenetl tests
         working-directory: .
         env:
-          PYTHONPATH: app:$
+          PYTHONPATH: app:$PYTHONPATH
