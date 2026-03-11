@@ -27,6 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
+        working-directory: ./app
 
       - name: Check code formatting with Black
         run: poetry run black --check genaidrivenetl tests
