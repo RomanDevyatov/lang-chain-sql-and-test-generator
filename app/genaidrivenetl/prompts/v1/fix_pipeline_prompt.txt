@@ -19,9 +19,9 @@ Rules:
 
 Return the result in JSON:
 
-{
+{{
   "sql": "...",
   "tests": "..."
-}
+}}
 
 Return ONLY JSON.
