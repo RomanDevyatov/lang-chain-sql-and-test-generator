@@ -53,7 +53,6 @@ x-airflow-common:
   build:
     context: .
     dockerfile: docker/airflow/Dockerfile
-  # build: .
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor #CeleryExecutor
@@ -146,7 +145,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    # user: "50000:0"
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -162,7 +160,6 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    # user: "50000:0"
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:

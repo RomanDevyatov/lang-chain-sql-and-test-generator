@@ -1,3 +1,4 @@
+import re
 import time
 from pathlib import Path
 
@@ -42,8 +43,7 @@ def save_raw_tests(tests: str) -> str:
 
     GEN_TEST_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    tests_clean = tests.replace("```python", "").replace("```", "")
-    GEN_TEST_PATH.write_text(tests_clean)
+    GEN_TEST_PATH.write_text(tests)
 
     mlflow.log_artifact(str(GEN_TEST_PATH), artifact_path="tests")
 
@@ -52,3 +52,13 @@ def save_raw_tests(tests: str) -> str:
     mlflow.log_metric("save_tests_latency_sec", time.perf_counter() - start)
 
     return tests
+
+
+def strip_markdown(code) -> str:
+
+    code = re.sub(r"```python", "", code)
+    code = re.sub(r"```sql", "", code)
+    
+    code = re.sub(r"```", "", code)
+
+    return code.strip()

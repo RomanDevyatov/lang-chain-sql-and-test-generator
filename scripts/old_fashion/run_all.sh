@@ -4,9 +4,9 @@ set -e
 # ==============================
 # Load environment variables
 # ==============================
-# set -a
-# source .env
-# set +a
+set -a
+source .env
+set +a
 
 # ==============================
 # Run DB initialization
