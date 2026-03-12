@@ -9,60 +9,61 @@ It demonstrates how LLM orchestration can be integrated into a production-style 
 
 ```mermaid
 graph TD
-    
-    %% Nodes Definition
+
     Table[("Raw Events Table")] --> Start
     Start([Raw Schema & Business Rules]) --> Ingestion[Metadata Ingestion]
-    
+
     subgraph "AI Generation Engine (LangChain Pipeline)"
-        Ingestion -.-> SQLGenNode[Generate SQL]       
+        Ingestion --> SQLGenNode[Generate SQL]
         SQLGenNode --> TestGenNode[Generate Tests]
+        TestGenNode --> SQLValidator
     end
 
-    subgraph "Feedback Loop"
-        LLMfixPipeline -->|Fixed SQL/Tests| PytestSuite[Pytest Generated Tests]
-        PytestSuite -->|Fail| LLMfixPipeline(LLM Fix Agent)
-        TestGenNode --> PytestSuite        
+    subgraph "Generated Files"
+        GeneratedSql["Generated SQL"]
+        GeneratedTests["Generated Py Tests"]
     end
-        
-    subgraph "Open AI API"
-        OpenRouter -.->|SQL| SQLGenNode 
-        OpenRouter -.->|Tests| TestGenNode
-        SQLGenNode -.->|SQL prompt| OpenRouter
-        TestGenNode -.->|Test prompt| OpenRouter[OpenRouter API]
+
+    SQLGenNode --> GeneratedSql
+    TestGenNode --> GeneratedTests
+    
+    subgraph "Feedback Loop"
+        TestGenNode --> PytestSuite[Pytest Generated Tests]
+        PytestSuite -->|Fail| LLMfixPipeline[LLM Fix Agent]
+        LLMfixPipeline -->|Rewrite SQL/Tests| PytestSuite
+    end
+
+    subgraph "Data Quality"
+        SQLValidator{Generated SQL Validator} -->|Write| Staging[(Staging View)]
+        Staging --> PytestSuite
+        PytestSuite -->|Pass| Executor[Promote Staging View]
     end
     
+    subgraph "OpenRouter API"
+        SQLGenNode -.->|SQL Prompt| OpenRouter[OpenRouter]
+        TestGenNode -.->|Test Prompt| OpenRouter
+        LLMfixPipeline -.->|Fix Prompt| OpenRouter
+    end
+
     subgraph "Tracking"
-        Ingestion -.->|Log| MLflow
-        SQLGenNode -.->|Log| MLflow((MLflow Tracking))
+        Ingestion -.->|Log| MLflow((MLflow Tracking))
+        SQLGenNode -.->|Log| MLflow
         TestGenNode -.->|Log| MLflow
         LLMfixPipeline -.->|Log| MLflow
-        MLflow -->|Write| MinIO[(MinIO)]
-        MLflow -->|Write| PostgresMLflow[(Postgres)]    
-    end
-    
-    subgraph "Data Quality"        
-        SQLValidator{Generated SQL Validator} -->|Write| Staging[(Staging View)]
-        PytestSuite -->|Pass| Executor
-        Staging -.-> PytestSuite
-        Staging -.-> Executor("Promote Staging View")
-    end
-    
-    subgraph "Generated files"
-        GeneratedSql['Generated SQL']
-        GeneratedTests['Generated Py Tests']
+
+        MLflow -->|Artifacts| MinIO[(MinIO)]
+        MLflow -->|Metadata| PostgresMLflow[(Postgres)]
     end
 
-    subgraph "Prod"
-        Executor -->|Pass/Write| ProdView[(Prod View)]
+    subgraph "Production"
+        Executor -->|Pass| ProdView[(Prod View)]
         Executor -->|Fail| Rollback[Rollback]
     end
-    
-    subgraph "BI and Analysts"
-        ProdView -.->|Read| Analyze
+
+    subgraph "BI & Analysts"
+        ProdView -.->|Read| Analyze[Analytics / BI]
     end
 
-    %% Colors and Styles
     classDef startEnd fill:#f5f5f5,stroke:#666,stroke-width:2px,color:#333;
     classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
     classDef testNode fill:#e2f6de,stroke:#666,stroke-width:2px;
@@ -71,11 +72,11 @@ graph TD
     classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5;
 
     class Start,Analyze,Ingestion startEnd;
-    class SQLGenNode,TestGenNode aiNode;
+    class SQLGenNode,TestGenNode,LLMfixPipeline aiNode;
+    class PytestSuite testNode;
     class Staging,ProdView,MinIO,PostgresMLflow,Table,GeneratedSql,GeneratedTests storage;
-    class SQLValidator,Executor,Suite,Rollback action;
+    class SQLValidator,Executor,Rollback action;
     class MLflow,OpenRouter tracking;
-    class PytestSuite,LLMfixPipeline testNode;
 ```
 
 ---
