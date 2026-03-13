@@ -3,7 +3,6 @@
 An AI-driven data pipeline that generates SQL transformations and corresponding pytest tests from raw schemas.  
 The system validates generated SQL and uses a self-correcting feedback loop to ensure correctness before promoting changes to production.
 
-Pipeline: Schema → SQL Generation → Validation → Test Generation → Test Execution → Promote  
 Stack: LangChain · Airflow · MLflow · MinIO · PostgreSQL · Docker
 
 ## Overview
@@ -13,6 +12,8 @@ All generated SQL is validated and tested; failing outputs are automatically cor
 The workflow is orchestrated with Apache Airflow, and all artifacts, parameters, and metrics are tracked in MLflow for reproducibility and observability.
 
 **Enables automated promotion of production-ready SQL transformations with zero manual intervention.**
+
+Pipeline steps: Metadata ingestion → SQL generation (LLM) → Validation → Test generation → Test execution → Feedback loop → Promote staging → Production → MLflow tracking.
 
 ---
 
@@ -156,15 +157,6 @@ For detailed developer documentation and step-by-step instructions, see [Documen
 
 ## How the Pipeline Works
 
-The project implements an **AI-driven data pipeline** that generates SQL transformations and corresponding data quality tests from raw schemas.  
-The workflow is orchestrated using **Apache Airflow** and validated before promoting any changes to production.
-
----
-
-## Pipeline Steps
-
-Schema → SQL Generation → SQL Validation → Test Generation → Test Execution → Promote → MLflow Tracking
-
 ```mermaid
 graph TD
    Schema --> SQLGen
@@ -211,9 +203,12 @@ raw_schema:
   - revenue: numeric
 
 business_rules:
-  - "Sum revenue by user per day"
   - "Ignore events with null user_id"
+aggregates: ...
+
 ```
+
+You can find values in [config](app/genaidrivenetl/config.py)
 
 ### 2. SQL Generation (LLM Output)
 ```sql
@@ -258,7 +253,6 @@ Artifacts are stored in MinIO (s3://mlflow/), ensuring reproducibility.
 ## Screenshots (Airflow)
 
 ![air1.png](docs/screenshots/airflow/air1.png)
-![air2.png](docs/screenshots/airflow/air2.png)
 
 ---
  
