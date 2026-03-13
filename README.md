@@ -9,7 +9,7 @@ Stack: LangChain · Airflow · MLflow · MinIO · PostgreSQL · Docker
 
 This project implements an AI-driven data pipeline that generates SQL transformations and pytest tests from raw schemas. All outputs are validated, and any failing SQL or tests are automatically corrected via a self-correcting feedback loop before promotion to production.
 
-The workflow is orchestrated with Apache Airflow, with all parameters, artifacts, and metrics tracked in MLflow for full reproducibility and observability. This enables automated, zero-touch promotion of production-ready transformations.
+Workflow is orchestrated with Airflow; all parameters, artifacts, and metrics are logged in MLflow for reproducibility and observability. This enables automated, zero-touch promotion of production-ready transformations.
 
 ## Pipeline Steps
 
@@ -43,6 +43,8 @@ graph TD
    Tests -->|Fail| Feedback
    Tests -->|Pass| Promote
 ```
+
+__Full architecture diagram below for reference__
 
 ---
 
@@ -251,11 +253,11 @@ graph TD
 
 
    classDef startEnd fill:#f5f5f5,stroke:#666,stroke-width:2px,color:#333;
-   classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-   classDef testNode fill:#e2f6de,stroke:#666,stroke-width:2px;
-   classDef storage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
-   classDef action fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-   classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,stroke-dasharray: 5 5;
+   classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
+   classDef testNode fill:#e2f6de,stroke:#666,stroke-width:2px,color:#333;
+   classDef storage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#333;
+   classDef action fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#333;
+   classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#333,stroke-dasharray: 5 5;
 
 
    class Start,Analyze,Ingestion startEnd;
@@ -265,5 +267,3 @@ graph TD
    class SQLValidator,Executor,Rollback action;
    class MLflow,OpenRouter tracking;
 ```
-
----
