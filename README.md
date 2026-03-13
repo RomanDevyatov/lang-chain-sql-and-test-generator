@@ -11,9 +11,9 @@ This project implements an AI-driven data pipeline that generates SQL transforma
 
 Workflow is orchestrated with Airflow; all parameters, artifacts, and metrics are logged in MLflow for reproducibility and observability. This enables automated, zero-touch promotion of production-ready transformations.
 
-## Pipeline Steps
-
 Metadata ingestion → SQL generation (LLM) → Validation → Test generation → Test execution → Feedback loop → Staging → Production → MLflow tracking
+
+## Pipeline Steps
 
 - Metadata ingestion – Load raw schema definitions and business rules.
 
@@ -30,6 +30,8 @@ Metadata ingestion → SQL generation (LLM) → Validation → Test generation �
 - Promotion – Passing transformations are promoted to production.
 
 - Tracking – All parameters, generated SQL, tests, and metrics logged in MLflow; artifacts stored in MinIO.
+
+### Logical Pipeline Overview
 
 ```mermaid
 graph TD
@@ -140,22 +142,23 @@ def test_no_null_user_id(df):
 
 ### 4. Test Execution & Quality Gate
 
-Tests run against the staging view.
+- Tests run against the staging view.
 
-✅ All tests passed → staging view promoted to production.
+- ✅ All tests passed → staging view promoted to production.
 
 ### 5. Promotion to Production
-user_metrics_view__staging → user_metrics_view
+
+- user_metrics_view__staging → user_metrics_view
 
 ### 6. Experiment Logging (MLflow)
 
-Run parameters logged: schema, rules, LLM version
+- Run parameters logged: schema, rules, LLM version
 
-Artifacts: generated SQL, tests
+- Artifacts: generated SQL, tests
 
-Metrics: test pass/fail status, execution time
+- Metrics: test pass/fail status, execution time
 
-Artifacts are stored in MinIO (s3://mlflow/), ensuring reproducibility.
+- Artifacts are stored in MinIO (s3://mlflow/), ensuring reproducibility.
 
 ---
 
@@ -180,10 +183,11 @@ Each run logs input parameters and test/SQL metrics.
 ## Screenshots (Airflow)
 
 ![air1.png](docs/screenshots/airflow/air1.png)
+![air3.png](docs/screenshots/airflow/air3.png)
 
 ---
 
-## Architecture Overview
+## Detailed Architecture Overview
 
 ```mermaid
 graph TD
