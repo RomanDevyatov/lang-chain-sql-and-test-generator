@@ -46,7 +46,7 @@ graph TD
    Tests -->|Pass| Promote
 ```
 
-__Full architecture diagram below for reference__
+*Full architecture diagram below for reference*
 
 ---
 
