@@ -220,82 +220,87 @@ Each run logs input parameters and test/SQL metrics.
 ```mermaid
 graph TD
 
-
+   %% مصادر
    Table[("Raw Events Table")] --> Start
    Start([Raw Schema & Business Rules]) --> Ingestion[Metadata Ingestion]
 
-
+   %% AI ENGINE
    subgraph "AI Generation Engine (LangChain Pipeline)"
        Ingestion --> SQLGenNode[Generate SQL]
        SQLGenNode --> TestGenNode[Generate Tests]
        TestGenNode --> SQLValidator
    end
 
-
+   %% GENERATED FILES
    subgraph "Generated Files"
        GeneratedSql["Generated SQL"]
        GeneratedTests["Generated Py Tests"]
    end
 
-
    SQLGenNode --> GeneratedSql
    TestGenNode --> GeneratedTests
-  
+
+   %% FEEDBACK LOOP
    subgraph "Feedback Loop"
-       TestGenNode --> PytestSuite[Pytest Generated Tests]
+       TestGenNode --> PytestSuite[Run Pytest Suite]
        PytestSuite -->|Fail| LLMfixPipeline[LLM Fix Agent]
        LLMfixPipeline -->|Rewrite SQL/Tests| PytestSuite
    end
 
-
+   %% DATA QUALITY
    subgraph "Data Quality"
-       SQLValidator{Generated SQL Validator} -->|Write| Staging[(Staging View)]
+       SQLValidator{SQL Validator} -->|Write| Staging[(Staging View)]
        Staging --> PytestSuite
-       PytestSuite -->|Pass| Executor[Promote Staging View]
+       PytestSuite -->|Pass| Executor[Promote View]
    end
-  
+
+   %% API
    subgraph "OpenRouter API"
        SQLGenNode -.->|SQL Prompt| OpenRouter[OpenRouter]
        TestGenNode -.->|Test Prompt| OpenRouter
        LLMfixPipeline -.->|Fix Prompt| OpenRouter
    end
 
-
+   %% TRACKING
    subgraph "Tracking"
-       Ingestion -.->|Log| MLflow((MLflow Tracking))
+       Ingestion -.->|Log| MLflow((MLflow))
        SQLGenNode -.->|Log| MLflow
        TestGenNode -.->|Log| MLflow
        LLMfixPipeline -.->|Log| MLflow
-
 
        MLflow -->|Artifacts| MinIO[(MinIO)]
        MLflow -->|Metadata| PostgresMLflow[(Postgres)]
    end
 
-
+   %% PRODUCTION
    subgraph "Production"
        Executor -->|Pass| ProdView[(Prod View)]
        Executor -->|Fail| Rollback[Rollback]
    end
 
-
+   %% BI
    subgraph "BI & Analysts"
        ProdView -.->|Read| Analyze[Analytics / BI]
    end
 
+   %% ===== STYLES (HIGH READABILITY) =====
 
-   classDef startEnd fill:#f5f5f5,stroke:#666,stroke-width:2px,color:#333;
-   classDef aiNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
-   classDef testNode fill:#e2f6de,stroke:#666,stroke-width:2px,color:#333;
-   classDef storage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#333;
-   classDef action fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#333;
-   classDef tracking fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#333,stroke-dasharray: 5 5;
+   classDef source fill:#ECEFF1,stroke:#455A64,stroke-width:2px,color:#000;
+   classDef ai fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;
+   classDef validation fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100;
+   classDef test fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;
+   classDef storage fill:#FFF8E1,stroke:#F9A825,stroke-width:2px,color:#5D4037;
+   classDef action fill:#E0F2F1,stroke:#00897B,stroke-width:2px,color:#004D40;
+   classDef feedback fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C;
+   classDef tracking fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#4A148C,stroke-dasharray: 5 5;
 
-
-   class Start,Analyze,Ingestion startEnd;
-   class SQLGenNode,TestGenNode,LLMfixPipeline aiNode;
-   class PytestSuite testNode;
-   class Staging,ProdView,MinIO,PostgresMLflow,Table,GeneratedSql,GeneratedTests storage;
-   class SQLValidator,Executor,Rollback action;
+   %% APPLY
+   class Table,GeneratedSql,GeneratedTests,Staging,ProdView,MinIO,PostgresMLflow storage;
+   class Start,Ingestion,Analyze source;
+   class SQLGenNode,TestGenNode ai;
+   class SQLValidator validation;
+   class PytestSuite test;
+   class Executor,Rollback action;
+   class LLMfixPipeline feedback;
    class MLflow,OpenRouter tracking;
 ```
