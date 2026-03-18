@@ -219,8 +219,6 @@ Each run logs input parameters and test/SQL metrics.
 
 ```mermaid
 graph TD
-
-   %% مصادر
    Table[("Raw Events Table")] --> Start
    Start([Raw Schema & Business Rules]) --> Ingestion[Metadata Ingestion]
 
@@ -283,7 +281,7 @@ graph TD
        ProdView -.->|Read| Analyze[Analytics / BI]
    end
 
-   %% ===== STYLES (HIGH READABILITY) =====
+   %% STYLES
 
    classDef source fill:#ECEFF1,stroke:#455A64,stroke-width:2px,color:#000;
    classDef ai fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;
