@@ -35,15 +35,43 @@ Metadata ingestion → SQL generation (LLM) → Validation → Test generation �
 
 ```mermaid
 graph TD
+   %% Nodes
+   Schema[Schema]
+   SQLGen[SQL Generator]
+   TestGen[Test Generator]
+   SQLValidator[SQL Validator]
+   CreateView[Create View]
+   Tests[Run Tests]
+   Feedback[Feedback Loop]
+   Promote[Promote]
+
+   %% Flow
    Schema --> SQLGen
    SQLGen --> TestGen
-   Feedback -->|Rewrite SQL/Tests| Tests
-   TestGen --> Tests
+   TestGen --> SQLValidator
    SQLValidator -->|Pass| CreateView
    CreateView --> Tests
-   TestGen --> SQLValidator
+   TestGen --> Tests
    Tests -->|Fail| Feedback
+   Feedback -->|Rewrite SQL/Tests| Tests
    Tests -->|Pass| Promote
+
+   %% Styling
+   classDef source fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#0D47A1;
+   classDef process fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#1B5E20;
+   classDef validation fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#E65100;
+   classDef action fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,color:#4A148C;
+   classDef result fill:#E0F2F1,stroke:#00897B,stroke-width:2px,color:#004D40;
+   classDef feedback fill:#FFEBEE,stroke:#E53935,stroke-width:2px,color:#B71C1C;
+
+   %% Apply classes
+   class Schema source;
+   class SQLGen,TestGen process;
+   class SQLValidator validation;
+   class CreateView action;
+   class Tests result;
+   class Promote action;
+   class Feedback feedback;
 ```
 
 *Full architecture diagram below for reference*
