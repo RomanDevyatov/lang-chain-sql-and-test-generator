@@ -11,7 +11,7 @@ MAX_RETRIES = 3
 logger = logging.getLogger(__name__)
 
 
-def universal_feedback_loop(state, fix_chain):
+def universal_feedback_loop(state: dict, fix_chain, evaluate_chain, score_threshold: int = 8):
 
     for attempt in range(MAX_RETRIES):
 

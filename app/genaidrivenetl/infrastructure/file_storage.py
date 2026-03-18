@@ -10,10 +10,12 @@ SQL_PATH = Path(Config.GENERATED_SQL_PATH)
 GEN_TEST_PATH = Path(Config.GENERATED_TESTS_PATH)
 
 
-def save_sql(sql: str) -> str:
+def save_sql(state: dict) -> dict:
+    sql = state.get("sql") or ""
     if not sql:
         mlflow.set_tag("sql_status", "empty")
-        return sql
+        state["sql_saved"] = False
+        return state
 
     start = time.perf_counter()
 
@@ -27,17 +29,20 @@ def save_sql(sql: str) -> str:
     mlflow.log_metric("sql_length_lines", sql.count("\n") + 1)
     mlflow.log_metric("save_sql_latency_sec", time.perf_counter() - start)
 
-    return sql
+    state.update({"sql_saved": True, "sql_path": str(SQL_PATH)})
+    return state
 
 
 def read_gen_sql():
     return SQL_PATH.read_text()
 
 
-def save_raw_tests(tests: str) -> str:
+def save_raw_tests(state: dict) -> dict:
+    tests = state.get("tests") or ""
     if not tests:
         mlflow.set_tag("tests_status", "empty")
-        return tests
+        state["tests_saved"] = False
+        return state
 
     start = time.perf_counter()
 
@@ -51,14 +56,22 @@ def save_raw_tests(tests: str) -> str:
     mlflow.log_metric("num_test_lines", tests.count("\n") + 1)
     mlflow.log_metric("save_tests_latency_sec", time.perf_counter() - start)
 
-    return tests
+    state.update({"tests_saved": True, "tests_path": str(GEN_TEST_PATH)})
+    return state
 
 
 def strip_markdown(code) -> str:
-
-    code = re.sub(r"```python", "", code)
-    code = re.sub(r"```sql", "", code)
-
-    code = re.sub(r"```", "", code)
+    code = re.sub(r"python", "", code)
+    code = re.sub(r"sql", "", code)
+    code = re.sub(r"", "", code)
 
     return code.strip()
+
+
+def strip_markdown_state(state: dict, key: str) -> dict:
+    code = state.get(key, "")
+    code = re.sub(r"```python", "", code)
+    code = re.sub(r"```sql", "", code)
+    code = re.sub(r"```", "", code)
+    state[key] = code.strip()
+    return state
