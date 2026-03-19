@@ -11,8 +11,6 @@ This project implements an AI-driven data pipeline that generates SQL transforma
 
 Workflow is orchestrated with Airflow; all parameters, artifacts, and metrics are logged in MLflow for reproducibility and observability. This enables automated, zero-touch promotion of production-ready transformations.
 
-Metadata ingestion → SQL generation (LLM) → Validation → Test generation → Test execution → Feedback loop → Staging → Production → MLflow tracking
-
 ## Pipeline Steps
 
 - Metadata ingestion – Load raw schema definitions and business rules.
