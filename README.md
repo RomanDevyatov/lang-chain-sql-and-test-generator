@@ -123,7 +123,7 @@ Open the Airflow UI: http://localhost:8080
 
 Trigger the `generate_sql_and_test` DAG and monitor task logs.
 
-For detailed developer documentation and step-by-step instructions, see [Documentation](docs/DOCUMENTATION.md).
+*For detailed developer documentation and step-by-step instructions, see [Documentation](docs/DOCUMENTATION.md).*
 
 ---
 
