@@ -1,7 +1,7 @@
 import json
 import logging
 
-from ..config import Config
+from genaidrivenetl.config import Config
 from ..infrastructure.file_storage import save_raw_tests, save_sql
 from .test_runner import run_tests
 from .evaluate import evaluate_sql

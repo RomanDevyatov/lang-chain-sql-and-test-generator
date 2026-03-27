@@ -1,5 +1,9 @@
+import logging
+
 from genaidrivenetl.config import Config
 from genaidrivenetl.infrastructure.file_storage import strip_markdown
+
+logger = logging.getLogger(__name__)
 
 
 def generate_via_chain(state: dict, chain, required_vars: list, result_key: str, preview_label: str) -> dict:

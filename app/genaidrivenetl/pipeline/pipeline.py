@@ -31,7 +31,7 @@ def generate_sql(state, chain):
     return generate_via_chain(
         state,
         chain,
-        required_vars=["raw_schema", "view_name", "rules", "aggregates"],
+        required_vars=["raw_schema", "staging_view_name", "rules", "aggregates"],
         result_key="sql",
         preview_label="SQL generation"
     )
@@ -41,7 +41,7 @@ def generate_tests(state, chain):
     return generate_via_chain(
         state,
         chain,
-        required_vars=["sql", "view_name", "fixture_name", "required_checks", "rules_test"],
+        required_vars=["sql", "staging_view_name", "fixture_name", "required_checks", "rules_test"],
         result_key="tests",
         preview_label="Test generation"
     )
