@@ -1,4 +1,4 @@
-from app.genaidrivenetl.config import Config
+from genaidrivenetl.config import Config
 
 import logging
 import mlflow
