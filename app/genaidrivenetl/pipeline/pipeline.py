@@ -52,6 +52,7 @@ def build_pipeline(llm):
     gen_test_chain = build_chain(llm, Config.TEST_PROMPT_PATH)    
     evaluate_chain = build_chain(llm, Config.EVALUATE_PROMPT_PATH)
     fix_chain = build_chain(llm, Config.FIX_PIPELINE_PROMPT_PATH)
+    сlassify_chain = build_chain(llm, Config.CLASSIFY_PROMPT_PATH)
 
     return (
         log_with_preview("Generating SQL...")
@@ -65,5 +66,5 @@ def build_pipeline(llm):
         | log_with_preview("Saving tests to disk...")
         | RunnableLambda(save_raw_tests)
         | log_with_preview("Running feedback loop...")
-        | RunnableLambda(lambda state: universal_feedback_loop(state, fix_chain, evaluate_chain))
+        | RunnableLambda(lambda state: universal_feedback_loop(state, fix_chain, evaluate_chain, сlassify_chain))
     )

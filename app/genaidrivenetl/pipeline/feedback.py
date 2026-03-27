@@ -12,7 +12,7 @@ MAX_RETRIES = 3
 logger = logging.getLogger(__name__)
 
 
-def universal_feedback_loop(state: dict, fix_chain, evaluate_chain, score_threshold: int = 8):
+def universal_feedback_loop(state: dict, fix_chain, evaluate_chain, classify_chain, score_threshold: int = 8):
 
     for attempt in range(MAX_RETRIES):
 
@@ -24,6 +24,20 @@ def universal_feedback_loop(state: dict, fix_chain, evaluate_chain, score_thresh
 
         logger.error(f"Attempt {attempt + 1} failed. Output:\n{result['output']}")
         logger.info("Asking LLM to fix...")
+
+        error_output = result['output']
+
+        failure_type = classify_chain.invoke({
+            "sql": state.get("sql", ""),
+            "tests": state.get("tests", ""),
+            "error": error_output
+        }).strip()
+
+        logger.info(f"Failure classified as: {failure_type}")
+
+        if failure_type == "DATA_ERROR":
+            logger.error("Tests failed due to bad data. Pipeline must fail.")
+            raise RuntimeError("Data quality tests failed. Pipeline cannot auto-fix data.")
 
         sql = Config.GENERATED_SQL_PATH.read_text()
         tests = Config.GENERATED_TESTS_PATH.read_text()
