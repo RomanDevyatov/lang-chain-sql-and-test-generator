@@ -12,6 +12,7 @@ from genaidrivenetl.pipeline.chains import build_chain
 
 from .evaluate import evaluate_sql
 from .feedback import universal_feedback_loop
+from .generation import generate_via_chain
 
 logger = logging.getLogger(__file__)
 
