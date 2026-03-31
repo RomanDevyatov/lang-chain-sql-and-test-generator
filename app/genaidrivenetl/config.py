@@ -82,7 +82,10 @@ class Config:
     VERSION = "v1"
     SQL_PROMPT_PATH = PROMPTS_DIR / VERSION / "sql_prompt.txt"
     TEST_PROMPT_PATH = PROMPTS_DIR / VERSION / "test_prompt.txt"
-    FIX_PIPELINE_PROMPT_PATH = PROMPTS_DIR / VERSION / "fix_pipeline_prompt.txt"
+    FIX_PIPELINE_PROMPT_PATH = PROMPTS_DIR / VERSION / "fix_pipeline_prompt.txt"    
+    EVALUATE_PROMPT_PATH = PROMPTS_DIR / VERSION / "evaluation_prompt.txt"
+    CLASSIFY_PROMPT_PATH = PROMPTS_DIR / VERSION / "classify_failure_prompt.txt
+
 
     # ========= LOGGING =========
 

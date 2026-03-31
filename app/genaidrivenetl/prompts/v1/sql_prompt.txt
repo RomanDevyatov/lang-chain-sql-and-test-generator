@@ -6,7 +6,7 @@ Input table schema:
 
 Generate PostgreSQL SQL that:
 
-Creates or replaces a view named {view_name}.
+Creates or replaces a view named {staging_view_name}.
 
 The view must aggregate per user:
 

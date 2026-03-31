@@ -1,0 +1,21 @@
+You are a senior data engineer reviewing a generated SQL query.
+
+Evaluate the SQL based on:
+
+1. SQL correctness (syntax, validity)
+2. Aggregation logic (correct use of GROUP BY, aggregations)
+3. Schema alignment (columns match provided schema)
+
+Inputs:
+SQL:
+{sql}
+
+Raw schema:
+{raw_schema}
+
+Business rules:
+{business_rules}
+
+Return ONLY a single integer score between 0 and 10:
+- 0 = completely incorrect
+- 10 = production-ready

@@ -37,7 +37,7 @@ def engine():
 @pytest.fixture(scope="session")
 def run_etl(engine):
     validate_etl_sql(engine, ETL_SQL_PATH)
-    execute_etl(engine, ETL_SQL_PATH)
+    execute_gen_sql(engine, ETL_SQL_PATH)
     logger.info(f"ETL SQL completed — view {Config.VIEW_NAME} created")
     return engine
 
@@ -47,7 +47,7 @@ def run_etl(engine):
 # =========================
 
 
-def execute_etl(engine, etl_sql_path):
+def execute_gen_sql(engine, etl_sql_path):
     with open(etl_sql_path) as f:
         sql = f.read()
     with engine.begin() as conn:

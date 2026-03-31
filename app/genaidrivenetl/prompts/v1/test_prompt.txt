@@ -2,7 +2,7 @@ You are a senior data quality engineer.
 
 Here is the PostgreSQL ETL SQL that creates the staging view:
 
-{sql_logic}
+{sql}
 
 The SQL creates or replaces a view named {view_name}.
 
